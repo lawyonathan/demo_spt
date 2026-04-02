@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "next-dev",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-c", "cd /Users/Lawrence_Yonathan/Documents/GitHub/demo_spt && export PATH=/Users/Lawrence_Yonathan/.nvm/versions/node/v24.13.0/bin:$PATH && npx next dev --webpack"],
+      "port": 3000
+    }
+  ]
+}
