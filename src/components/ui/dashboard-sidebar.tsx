@@ -25,10 +25,13 @@ import {
   FileText,
 } from "lucide-react"
 
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
 interface NavItem {
   label: string
   icon: React.ElementType
-  active?: boolean
+  href?: string
   badge?: string | number
 }
 
@@ -48,9 +51,10 @@ const navSections: NavSection[] = [
       { label: "Payment", icon: CreditCard },
       { label: "Hotel", icon: Hotel },
       { label: "Project Management", icon: FolderKanban },
-      { label: "Real Estate", icon: Home, active: true },
+      { label: "Real Estate", icon: Home, href: "/dashboard/real-estate" },
       { label: "Sales", icon: TrendingUp },
-      { label: "CRM", icon: Users },
+      { label: "CRM", icon: Users, href: "/dashboard/crm" },
+      { label: "Finance", icon: CreditCard, href: "/dashboard/finance" },
     ],
   },
   {
@@ -82,6 +86,7 @@ export interface DashboardSidebarProps
 
 const DashboardSidebar = React.forwardRef<HTMLDivElement, DashboardSidebarProps>(
   ({ className, collapsed = false, ...props }, ref) => {
+    const pathname = usePathname()
     const [openSections, setOpenSections] = React.useState<
       Record<string, boolean>
     >({
@@ -142,40 +147,45 @@ const DashboardSidebar = React.forwardRef<HTMLDivElement, DashboardSidebarProps>
               {/* Section items */}
               {openSections[section.title] && (
                 <div className="mt-1 space-y-0.5">
-                  {section.items.map((item) => (
-                    <button
-                      key={item.label}
-                      className={cn(
-                        "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                        item.active
-                          ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                          : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                        collapsed && "justify-center px-2"
-                      )}
-                      title={collapsed ? item.label : undefined}
-                    >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      {!collapsed && (
-                        <>
-                          <span className="flex-1 text-left truncate">
-                            {item.label}
-                          </span>
-                          {item.badge !== undefined && (
-                            <span
-                              className={cn(
-                                "ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-semibold",
-                                item.active
-                                  ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
-                                  : "bg-sidebar-accent text-sidebar-accent-foreground"
-                              )}
-                            >
-                              {item.badge}
+                  {section.items.map((item) => {
+                    const isActive = item.href ? pathname === item.href : false
+                    const Comp = item.href ? Link : "button"
+                    return (
+                      <Comp
+                        key={item.label}
+                        href={item.href ?? "#"}
+                        className={cn(
+                          "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                          isActive
+                            ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          collapsed && "justify-center px-2"
+                        )}
+                        title={collapsed ? item.label : undefined}
+                      >
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        {!collapsed && (
+                          <>
+                            <span className="flex-1 text-left truncate">
+                              {item.label}
                             </span>
-                          )}
-                        </>
-                      )}
-                    </button>
-                  ))}
+                            {item.badge !== undefined && (
+                              <span
+                                className={cn(
+                                  "ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-semibold",
+                                  isActive
+                                    ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
+                                    : "bg-sidebar-accent text-sidebar-accent-foreground"
+                                )}
+                              >
+                                {item.badge}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </Comp>
+                    )
+                  })}
                 </div>
               )}
             </div>
