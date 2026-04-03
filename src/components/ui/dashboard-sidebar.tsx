@@ -23,6 +23,7 @@ import {
   ChevronDown,
   AppWindow,
   FileText,
+  Coins,
 } from "lucide-react"
 
 import Link from "next/link"
@@ -46,7 +47,7 @@ const navSections: NavSection[] = [
     title: "Dashboards",
     icon: LayoutDashboard,
     items: [
-      { label: "Classic", icon: LayoutDashboard },
+      { label: "Classic", icon: LayoutDashboard, href: "/dashboard/classic" },
       { label: "E-commerce", icon: ShoppingCart },
       { label: "Payment", icon: CreditCard },
       { label: "Hotel", icon: Hotel },
@@ -55,6 +56,7 @@ const navSections: NavSection[] = [
       { label: "Sales", icon: TrendingUp },
       { label: "CRM", icon: Users, href: "/dashboard/crm" },
       { label: "Finance", icon: CreditCard, href: "/dashboard/finance" },
+      { label: "Crypto", icon: Coins, href: "/crypto" },
     ],
   },
   {
