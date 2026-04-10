@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Design System - reUI & cult-ui Inspired Components",
-  description: "A comprehensive design system built on shadcn/ui with reUI and cult-ui inspired components",
+  title: "BudgetFlow — Personal Finance Tracker",
+  description: "Track spending, manage budgets, and connect bank accounts",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
