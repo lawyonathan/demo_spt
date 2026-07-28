@@ -37,7 +37,9 @@ function segment(el: Element): string {
   const tag = el.tagName.toLowerCase()
   for (const attr of STABLE_ATTRS) {
     const v = el.getAttribute(attr)
-    if (!v) continue
+    // "" is a present, valueless attribute (<div data-note-anchor>) and is a
+    // perfectly good hook; only a missing attribute is skipped.
+    if (v === null) continue
     // Design systems repeat attributes like data-slot="card" across siblings,
     // so an attribute segment is only usable when it picks out one child.
     const candidate = `${tag}[${attr}="${escapeForSelector(v)}"]`

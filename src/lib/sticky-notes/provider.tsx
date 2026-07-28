@@ -7,6 +7,7 @@ import type { NoteAnchor, NoteColor, StickyNote, StorageAdapter } from "./types"
 import { localStorageAdapter } from "./adapters/local-storage"
 import { createNote, initialNotesState, notesReducer } from "./store"
 import { buildSelector } from "./selector"
+import { elementUnderPoint } from "./dom-utils"
 import { keepValidNotes } from "./validate"
 import { StickyNotesErrorBoundary } from "./error-boundary"
 import { StickyNotesToolbar } from "./toolbar"
@@ -44,9 +45,9 @@ type InternalContextValue = {
   placing: boolean
   setPlacing: (p: boolean) => void
   saveState: SaveState
-  registryRef: React.MutableRefObject<Map<string, NoteGeometry>>
-  dirtyRef: React.MutableRefObject<boolean>
-  overlayRef: React.MutableRefObject<HTMLDivElement | null>
+  registryRef: React.RefObject<Map<string, NoteGeometry>>
+  dirtyRef: React.RefObject<boolean>
+  overlayRef: React.RefObject<HTMLDivElement | null>
 }
 
 const Ctx = React.createContext<InternalContextValue | null>(null)
@@ -61,9 +62,20 @@ export function useStickyNotesInternal(): InternalContextValue {
 
 /** Public hook: programmatic access to the notes layer. */
 export function useStickyNotes() {
-  const { notes, addNoteAt, updateNote, removeNote, layerVisible, setLayerVisible } =
+  const { notes, addNoteAt, updateNote, removeNote, layerVisible, setLayerVisible, saveState } =
     useStickyNotesInternal()
-  return { notes, addNote: addNoteAt, updateNote, removeNote, layerVisible, setLayerVisible }
+  return React.useMemo(
+    () => ({
+      notes,
+      addNote: addNoteAt,
+      updateNote,
+      removeNote,
+      layerVisible,
+      setLayerVisible,
+      saveState,
+    }),
+    [notes, addNoteAt, updateNote, removeNote, layerVisible, setLayerVisible, saveState]
+  )
 }
 
 export function StickyNotesProvider({
@@ -77,7 +89,7 @@ export function StickyNotesProvider({
   const [state, dispatch] = React.useReducer(notesReducer, initialNotesState)
   const [layerVisible, setLayerVisible] = React.useState(true)
   const [activeColor, setActiveColor] = React.useState<NoteColor>("yellow")
-  const [placing, setPlacing] = React.useState(false)
+  const [placing, setPlacingState] = React.useState(false)
   const [saveState, setSaveState] = React.useState<SaveState>("idle")
   const [mounted, setMounted] = React.useState(false)
 
@@ -99,6 +111,13 @@ export function StickyNotesProvider({
   }, [adapter])
 
   React.useEffect(() => setMounted(true), [])
+
+  // Entering placement mode always reveals the layer: a note dropped onto a
+  // hidden layer would look like nothing happened.
+  const setPlacing = React.useCallback((next: boolean) => {
+    if (next) setLayerVisible(true)
+    setPlacingState(next)
+  }, [])
 
   // Load this page's notes whenever the pathname changes.
   React.useEffect(() => {
@@ -176,17 +195,13 @@ export function StickyNotesProvider({
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [placing])
+  }, [placing, setPlacing])
 
   const addNoteAt = React.useCallback(
     (clientX: number, clientY: number) => {
       // Placement before this page's notes load would be wiped by the load dispatch.
       if (!state.loaded) return
-      const overlay = overlayRef.current
-      if (overlay) overlay.style.display = "none"
-      const el = document.elementFromPoint(clientX, clientY)
-      if (overlay) overlay.style.display = ""
-      const target = el && el !== document.documentElement ? el : document.body
+      const target = elementUnderPoint(overlayRef, clientX, clientY)
       const { selector, tag } = buildSelector(target)
       const rect = target.getBoundingClientRect()
       const anchor: NoteAnchor = {
@@ -236,7 +251,17 @@ export function StickyNotesProvider({
       dirtyRef,
       overlayRef,
     }),
-    [state.notes, addNoteAt, updateNote, removeNote, layerVisible, activeColor, placing, saveState]
+    [
+      state.notes,
+      addNoteAt,
+      updateNote,
+      removeNote,
+      layerVisible,
+      activeColor,
+      placing,
+      setPlacing,
+      saveState,
+    ]
   )
 
   const overlay = mounted
@@ -259,6 +284,7 @@ export function StickyNotesProvider({
                   cursor: "crosshair",
                 }}
                 onClick={(e) => {
+                  e.stopPropagation()
                   addNoteAt(e.clientX, e.clientY)
                   setPlacing(false)
                 }}

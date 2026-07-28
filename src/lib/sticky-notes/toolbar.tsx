@@ -48,6 +48,7 @@ export function StickyNotesToolbar() {
       }}
     >
       <button
+        type="button"
         onClick={() => setPlacing(!placing)}
         title={placing ? "Cancel (Esc)" : "Add note"}
         style={{
@@ -62,8 +63,11 @@ export function StickyNotesToolbar() {
       {NOTE_COLOR_LIST.map((c) => (
         <button
           key={c}
+          type="button"
           onClick={() => setActiveColor(c)}
           title={c}
+          aria-label={`${c} note color`}
+          aria-pressed={c === activeColor}
           style={{
             width: 18,
             height: 18,
@@ -77,6 +81,7 @@ export function StickyNotesToolbar() {
       ))}
       <span style={{ width: 1, height: 18, background: "rgba(255,255,255,0.2)" }} />
       <button
+        type="button"
         onClick={() => setLayerVisible(!layerVisible)}
         title={layerVisible ? "Hide notes" : "Show notes"}
         style={{ ...pillBtn, background: "transparent", color: "#ffffff", fontSize: 13 }}

@@ -8,8 +8,8 @@ export function CanvasLayer({
   registryRef,
   dirtyRef,
 }: {
-  registryRef: React.MutableRefObject<Map<string, NoteGeometry>>
-  dirtyRef: React.MutableRefObject<boolean>
+  registryRef: React.RefObject<Map<string, NoteGeometry>>
+  dirtyRef: React.RefObject<boolean>
 }) {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null)
 

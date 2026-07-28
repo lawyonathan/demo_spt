@@ -45,6 +45,14 @@ describe("buildSelector", () => {
     expect(resolveAnchor(anchorFor(selector, tag), document)).toBe(el)
   })
 
+  it("honors a valueless opt-in marker attribute", () => {
+    document.body.innerHTML = `<main><div data-note-anchor></div></main>`
+    const el = document.querySelector("[data-note-anchor]")!
+    const { selector, tag } = buildSelector(el)
+    expect(selector).toBe(`main:nth-of-type(1) > div[data-note-anchor=""]`)
+    expect(resolveAnchor(anchorFor(selector, tag), document)).toBe(el)
+  })
+
   it("ignores a stable attribute that sibling elements also carry", () => {
     document.body.innerHTML =
       `<main><div data-slot="card"></div><div data-slot="card"></div></main>`

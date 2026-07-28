@@ -1,6 +1,6 @@
 export { StickyNotesProvider, useStickyNotes } from "./provider"
 export { StickyNotesToolbar } from "./toolbar"
-export type { NoteGeometry, SaveState, NotePatch } from "./provider"
+export type { SaveState, NotePatch } from "./provider"
 export { localStorageAdapter } from "./adapters/local-storage"
 export { restAdapter } from "./adapters/rest"
 export { NOTE_COLORS, NOTE_COLOR_LIST } from "./types"

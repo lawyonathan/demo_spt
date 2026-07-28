@@ -5,6 +5,7 @@ import { NOTE_COLORS, type StickyNote } from "./types"
 import { useAnchorPosition } from "./use-anchor-position"
 import { useStickyNotesInternal } from "./provider"
 import { buildSelector } from "./selector"
+import { elementUnderPoint } from "./dom-utils"
 
 const stripBtn: React.CSSProperties = {
   width: 18,
@@ -62,11 +63,7 @@ export function NoteCard({ note }: { note: StickyNote }) {
       if (dx === 0 && dy === 0) return
       const left = posRef.current.x + dx
       const top = posRef.current.y + dy
-      const overlay = overlayRef.current
-      if (overlay) overlay.style.display = "none"
-      const el = document.elementFromPoint(pointerX, pointerY)
-      if (overlay) overlay.style.display = ""
-      const target = el && el !== document.documentElement ? el : document.body
+      const target = elementUnderPoint(overlayRef, pointerX, pointerY)
       const { selector, tag } = buildSelector(target)
       const rect = target.getBoundingClientRect()
       updateNote(note.id, {
@@ -216,7 +213,9 @@ export function NoteCard({ note }: { note: StickyNote }) {
       <textarea
         value={note.text}
         placeholder="Write something…"
-        autoFocus={note.text === ""}
+        // Equal timestamps mean never edited, i.e. just created. Trade-off: an
+        // empty note that is reloaded from storage also steals focus once.
+        autoFocus={note.text === "" && note.createdAt === note.updatedAt}
         onChange={(e) => updateNote(note.id, { text: e.target.value })}
         style={{
           flex: 1,

@@ -8,7 +8,9 @@ export async function readStore(filePath: string): Promise<StoreShape> {
   try {
     const raw = await fs.readFile(filePath, "utf8")
     const parsed = JSON.parse(raw)
-    return parsed && typeof parsed === "object" ? (parsed as StoreShape) : {}
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as StoreShape)
+      : {}
   } catch {
     return {}
   }
