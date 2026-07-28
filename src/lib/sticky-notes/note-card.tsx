@@ -52,11 +52,16 @@ export function NoteCard({ note }: { note: StickyNote }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // reanchor must see the position from the render at DROP time, not the render
+  // that registered the pointerup listener — the page may scroll mid-drag.
+  const posRef = React.useRef(pos)
+  posRef.current = pos
+
   const reanchor = React.useCallback(
     (pointerX: number, pointerY: number, dx: number, dy: number) => {
       if (dx === 0 && dy === 0) return
-      const left = pos.x + dx
-      const top = pos.y + dy
+      const left = posRef.current.x + dx
+      const top = posRef.current.y + dy
       const overlay = overlayRef.current
       if (overlay) overlay.style.display = "none"
       const el = document.elementFromPoint(pointerX, pointerY)
@@ -75,7 +80,7 @@ export function NoteCard({ note }: { note: StickyNote }) {
         },
       })
     },
-    [note.id, pos.x, pos.y, overlayRef, updateNote]
+    [note.id, overlayRef, updateNote]
   )
 
   const dragStart = (e: React.PointerEvent) => {
