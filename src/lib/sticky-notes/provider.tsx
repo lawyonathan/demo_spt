@@ -7,6 +7,8 @@ import type { NoteAnchor, NoteColor, StickyNote, StorageAdapter } from "./types"
 import { localStorageAdapter } from "./adapters/local-storage"
 import { createNote, initialNotesState, notesReducer } from "./store"
 import { buildSelector } from "./selector"
+import { keepValidNotes } from "./validate"
+import { StickyNotesErrorBoundary } from "./error-boundary"
 import { StickyNotesToolbar } from "./toolbar"
 import { NoteCard } from "./note-card"
 import { CanvasLayer } from "./canvas-layer"
@@ -103,8 +105,11 @@ export function StickyNotesProvider({
     let cancelled = false
     dispatch({ type: "reset" })
     adapterRef.current.load(pathname).then(
-      (notes) => {
+      (loaded) => {
         if (cancelled) return
+        // Sanitizing produces a new array; the SAME array must go to both the
+        // guard and the reducer or the save guard's identity check breaks.
+        const notes = keepValidNotes(loaded)
         lastLoadRef.current = { pageKey: pathname, notes }
         dispatch({ type: "load", notes })
       },
@@ -241,24 +246,26 @@ export function StickyNotesProvider({
           data-sticky-notes-overlay=""
           style={{ position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none" }}
         >
-          {layerVisible && <CanvasLayer registryRef={registryRef} dirtyRef={dirtyRef} />}
-          {layerVisible && state.notes.map((n) => <NoteCard key={n.id} note={n} />)}
-          {placing && (
-            <div
-              data-sticky-notes-catcher=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                pointerEvents: "auto",
-                cursor: "crosshair",
-              }}
-              onClick={(e) => {
-                addNoteAt(e.clientX, e.clientY)
-                setPlacing(false)
-              }}
-            />
-          )}
-          <StickyNotesToolbar />
+          <StickyNotesErrorBoundary>
+            {layerVisible && <CanvasLayer registryRef={registryRef} dirtyRef={dirtyRef} />}
+            {layerVisible && state.notes.map((n) => <NoteCard key={n.id} note={n} />)}
+            {placing && (
+              <div
+                data-sticky-notes-catcher=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  pointerEvents: "auto",
+                  cursor: "crosshair",
+                }}
+                onClick={(e) => {
+                  addNoteAt(e.clientX, e.clientY)
+                  setPlacing(false)
+                }}
+              />
+            )}
+            <StickyNotesToolbar />
+          </StickyNotesErrorBoundary>
         </div>,
         document.body
       )
