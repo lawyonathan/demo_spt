@@ -21,6 +21,10 @@ export function notesReducer(state: NotesState, action: NotesAction): NotesState
     case "reset":
       return { notes: [], loaded: false }
     case "load":
+      // Adopts the caller's array by reference on purpose: the provider's
+      // post-load save guard compares by identity (lastLoadRef). Copying here
+      // would schedule an echo-save of every load — and an empty wipe on
+      // failed loads.
       return { notes: action.notes, loaded: true }
     case "add":
       return { ...state, notes: [...state.notes, action.note] }
