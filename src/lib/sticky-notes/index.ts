@@ -1,4 +1,5 @@
 export { StickyNotesProvider, useStickyNotes } from "./provider"
+export { StickyNotesToolbar } from "./toolbar"
 export type { NoteGeometry, SaveState, NotePatch } from "./provider"
 export { localStorageAdapter } from "./adapters/local-storage"
 export { restAdapter } from "./adapters/rest"

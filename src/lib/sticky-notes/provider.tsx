@@ -7,6 +7,7 @@ import type { NoteAnchor, NoteColor, StickyNote, StorageAdapter } from "./types"
 import { localStorageAdapter } from "./adapters/local-storage"
 import { createNote, initialNotesState, notesReducer } from "./store"
 import { buildSelector } from "./selector"
+import { StickyNotesToolbar } from "./toolbar"
 
 export type NoteGeometry = {
   x: number
@@ -160,8 +161,20 @@ export function StickyNotesProvider({
     dirtyRef.current = true
   }, [state.notes, layerVisible])
 
+  // Escape cancels placement mode.
+  React.useEffect(() => {
+    if (!placing) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPlacing(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [placing])
+
   const addNoteAt = React.useCallback(
     (clientX: number, clientY: number) => {
+      // Placement before this page's notes load would be wiped by the load dispatch.
+      if (!state.loaded) return
       const overlay = overlayRef.current
       if (overlay) overlay.style.display = "none"
       const el = document.elementFromPoint(clientX, clientY)
@@ -188,7 +201,7 @@ export function StickyNotesProvider({
         }),
       })
     },
-    [pathname, activeColor]
+    [pathname, activeColor, state.loaded]
   )
 
   const updateNote = React.useCallback((id: string, patch: NotePatch) => {
@@ -228,8 +241,22 @@ export function StickyNotesProvider({
         >
           {/* canvas layer (Task 10) */}
           {/* note cards (Task 8) */}
-          {/* placement catcher (Task 7) */}
-          {/* toolbar (Task 7) */}
+          {placing && (
+            <div
+              data-sticky-notes-catcher=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                pointerEvents: "auto",
+                cursor: "crosshair",
+              }}
+              onClick={(e) => {
+                addNoteAt(e.clientX, e.clientY)
+                setPlacing(false)
+              }}
+            />
+          )}
+          <StickyNotesToolbar />
         </div>,
         document.body
       )
