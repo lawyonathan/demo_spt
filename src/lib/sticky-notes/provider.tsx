@@ -80,8 +80,12 @@ export function StickyNotesProvider({
   const dirtyRef = React.useRef(true)
   const overlayRef = React.useRef<HTMLDivElement | null>(null)
   const adapterRef = React.useRef(adapter)
-  const firstAfterLoadRef = React.useRef(true)
   const pendingSaveRef = React.useRef<{ pageKey: string; notes: StickyNote[] } | null>(null)
+  // The most recent load: which page it was for, and the exact notes array it
+  // produced. The save effect consults both so that freshly loaded data is never
+  // written straight back (on a failed load that would be an empty wipe), and so
+  // one page's notes can never be saved under another page's key.
+  const lastLoadRef = React.useRef<{ pageKey: string; notes: StickyNote[] } | null>(null)
 
   // The load/save effects read the adapter through this ref so that swapping
   // the adapter prop does not re-trigger a load or restart the save debounce.
@@ -95,13 +99,17 @@ export function StickyNotesProvider({
   React.useEffect(() => {
     let cancelled = false
     dispatch({ type: "reset" })
-    firstAfterLoadRef.current = true
     adapterRef.current.load(pathname).then(
       (notes) => {
-        if (!cancelled) dispatch({ type: "load", notes })
+        if (cancelled) return
+        lastLoadRef.current = { pageKey: pathname, notes }
+        dispatch({ type: "load", notes })
       },
       () => {
-        if (!cancelled) dispatch({ type: "load", notes: [] })
+        if (cancelled) return
+        const empty: StickyNote[] = []
+        lastLoadRef.current = { pageKey: pathname, notes: empty }
+        dispatch({ type: "load", notes: empty })
       }
     )
     return () => {
@@ -112,10 +120,12 @@ export function StickyNotesProvider({
   // Debounced save on any notes change after load.
   React.useEffect(() => {
     if (!state.loaded) return
-    if (firstAfterLoadRef.current) {
-      firstAfterLoadRef.current = false
-      return
-    }
+    const lastLoad = lastLoadRef.current
+    // On a pathname change this effect re-runs before the reset dispatch lands,
+    // so state still holds the previous page's notes. Saving them now would file
+    // them under the new page's key.
+    if (!lastLoad || lastLoad.pageKey !== pathname) return
+    if (state.notes === lastLoad.notes) return
     pendingSaveRef.current = { pageKey: pathname, notes: state.notes }
     const t = window.setTimeout(() => {
       pendingSaveRef.current = null
