@@ -81,6 +81,7 @@ export function StickyNotesProvider({
   const overlayRef = React.useRef<HTMLDivElement | null>(null)
   const adapterRef = React.useRef(adapter)
   const firstAfterLoadRef = React.useRef(true)
+  const pendingSaveRef = React.useRef<{ pageKey: string; notes: StickyNote[] } | null>(null)
 
   // The load/save effects read the adapter through this ref so that swapping
   // the adapter prop does not re-trigger a load or restart the save debounce.
@@ -115,7 +116,9 @@ export function StickyNotesProvider({
       firstAfterLoadRef.current = false
       return
     }
+    pendingSaveRef.current = { pageKey: pathname, notes: state.notes }
     const t = window.setTimeout(() => {
+      pendingSaveRef.current = null
       setSaveState("saving")
       adapterRef.current.save(pathname, state.notes).then(
         () => setSaveState("idle"),
@@ -124,6 +127,23 @@ export function StickyNotesProvider({
     }, 500)
     return () => window.clearTimeout(t)
   }, [state.notes, state.loaded, pathname])
+
+  // Flush a not-yet-fired save when leaving the page (or unmounting) so the
+  // last edits before navigation aren't lost to the debounce window. This
+  // effect is declared after the save effect so that on a pathname change the
+  // save effect's cleanup clears the timer first, leaving the pending save for
+  // this cleanup to write out.
+  React.useEffect(() => {
+    return () => {
+      const pending = pendingSaveRef.current
+      if (!pending) return
+      pendingSaveRef.current = null
+      adapterRef.current.save(pending.pageKey, pending.notes).catch(() => {
+        // Fire-and-forget: the page is going away, so there is no saveState
+        // left to display and nothing useful to retry against.
+      })
+    }
+  }, [pathname])
 
   // Anything that moves notes must repaint the canvas layer.
   React.useEffect(() => {
