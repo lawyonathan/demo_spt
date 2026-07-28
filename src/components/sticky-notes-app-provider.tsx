@@ -1,7 +1,9 @@
 "use client"
 
-import { StickyNotesProvider } from "@/lib/sticky-notes"
+import { restAdapter, StickyNotesProvider } from "@/lib/sticky-notes"
+
+const adapter = restAdapter("/api/sticky-notes")
 
 export function AppStickyNotes({ children }: { children: React.ReactNode }) {
-  return <StickyNotesProvider>{children}</StickyNotesProvider>
+  return <StickyNotesProvider adapter={adapter}>{children}</StickyNotesProvider>
 }
