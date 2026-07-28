@@ -9,6 +9,7 @@ import { createNote, initialNotesState, notesReducer } from "./store"
 import { buildSelector } from "./selector"
 import { StickyNotesToolbar } from "./toolbar"
 import { NoteCard } from "./note-card"
+import { CanvasLayer } from "./canvas-layer"
 
 export type NoteGeometry = {
   x: number
@@ -240,7 +241,7 @@ export function StickyNotesProvider({
           data-sticky-notes-overlay=""
           style={{ position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none" }}
         >
-          {/* canvas layer (Task 10) */}
+          {layerVisible && <CanvasLayer registryRef={registryRef} dirtyRef={dirtyRef} />}
           {layerVisible && state.notes.map((n) => <NoteCard key={n.id} note={n} />)}
           {placing && (
             <div
