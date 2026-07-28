@@ -104,6 +104,9 @@ function Sortable<T extends SortableItem>({
   handle = true,
   variant = "default",
 }: SortableProps<T>) {
+  // dnd-kit's auto-generated context id differs between server and client,
+  // causing a hydration mismatch on aria-describedby; useId is SSR-stable.
+  const dndId = React.useId();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -127,6 +130,7 @@ function Sortable<T extends SortableItem>({
 
   return (
     <DndContext
+      id={dndId}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
