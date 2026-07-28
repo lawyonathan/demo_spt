@@ -45,6 +45,21 @@ describe("buildSelector", () => {
     expect(resolveAnchor(anchorFor(selector, tag), document)).toBe(el)
   })
 
+  it("ignores a stable attribute that sibling elements also carry", () => {
+    document.body.innerHTML =
+      `<main><div data-slot="card"></div><div data-slot="card"></div></main>`
+    const el = document.querySelectorAll(`[data-slot="card"]`)[1]
+    const { selector, tag } = buildSelector(el)
+    expect(resolveAnchor(anchorFor(selector, tag), document)).toBe(el)
+  })
+
+  it("escapes id characters that are not valid in a selector", () => {
+    document.body.innerHTML = `<main><div id="chart 1.2"></div></main>`
+    const el = document.getElementById("chart 1.2")!
+    const { selector, tag } = buildSelector(el)
+    expect(resolveAnchor(anchorFor(selector, tag), document)).toBe(el)
+  })
+
   it("returns 'body' for the body element itself", () => {
     const { selector, tag } = buildSelector(document.body)
     expect(selector).toBe("body")

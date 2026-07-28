@@ -26,12 +26,22 @@ function nthOfType(el: Element): number {
   return i
 }
 
+function isUniqueAmongSiblings(el: Element, candidate: string): boolean {
+  const parent = el.parentElement
+  if (!parent) return false
+  return parent.querySelectorAll(`:scope > ${candidate}`).length === 1
+}
+
 function segment(el: Element): string {
   if (el.id) return `#${escapeForSelector(el.id)}`
   const tag = el.tagName.toLowerCase()
   for (const attr of STABLE_ATTRS) {
     const v = el.getAttribute(attr)
-    if (v) return `${tag}[${attr}="${escapeForSelector(v)}"]`
+    if (!v) continue
+    // Design systems repeat attributes like data-slot="card" across siblings,
+    // so an attribute segment is only usable when it picks out one child.
+    const candidate = `${tag}[${attr}="${escapeForSelector(v)}"]`
+    if (isUniqueAmongSiblings(el, candidate)) return candidate
   }
   return `${tag}:nth-of-type(${nthOfType(el)})`
 }
