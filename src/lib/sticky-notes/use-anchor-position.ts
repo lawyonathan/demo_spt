@@ -41,13 +41,9 @@ export function computeAnchorPosition(
 }
 
 export function useAnchorPosition(anchor: NoteAnchor): AnchorPosition {
-  const [pos, setPos] = React.useState<AnchorPosition>(() => ({
-    x: anchor.fallbackX,
-    y: anchor.fallbackY,
-    detached: false,
-    anchorX: 0,
-    anchorY: 0,
-  }))
+  const [pos, setPos] = React.useState<AnchorPosition>(() =>
+    computeAnchorPosition(anchor, document, window)
+  )
 
   React.useEffect(() => {
     let raf = 0

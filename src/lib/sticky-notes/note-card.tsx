@@ -4,6 +4,7 @@ import * as React from "react"
 import { NOTE_COLORS, type StickyNote } from "./types"
 import { useAnchorPosition } from "./use-anchor-position"
 import { useStickyNotesInternal } from "./provider"
+import { buildSelector } from "./selector"
 
 const stripBtn: React.CSSProperties = {
   width: 18,
@@ -18,11 +19,12 @@ const stripBtn: React.CSSProperties = {
 }
 
 export function NoteCard({ note }: { note: StickyNote }) {
-  const { updateNote, removeNote, registryRef, dirtyRef } = useStickyNotesInternal()
+  const { updateNote, removeNote, registryRef, dirtyRef, overlayRef } = useStickyNotesInternal()
   const pos = useAnchorPosition(note.anchor)
+  const [drag, setDrag] = React.useState<{ dx: number; dy: number } | null>(null)
   const colors = NOTE_COLORS[note.color]
-  const x = pos.x
-  const y = pos.y
+  const x = pos.x + (drag?.dx ?? 0)
+  const y = pos.y + (drag?.dy ?? 0)
 
   // Publish geometry for the canvas layer (Task 10 reads this registry).
   React.useEffect(() => {
@@ -34,7 +36,7 @@ export function NoteCard({ note }: { note: StickyNote }) {
       anchorX: pos.anchorX,
       anchorY: pos.anchorY,
       detached: pos.detached,
-      dragging: false,
+      dragging: drag !== null,
       minimized: note.minimized,
       color: note.color,
     })
@@ -49,6 +51,76 @@ export function NoteCard({ note }: { note: StickyNote }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const reanchor = React.useCallback(
+    (pointerX: number, pointerY: number, dx: number, dy: number) => {
+      if (dx === 0 && dy === 0) return
+      const left = pos.x + dx
+      const top = pos.y + dy
+      const overlay = overlayRef.current
+      if (overlay) overlay.style.display = "none"
+      const el = document.elementFromPoint(pointerX, pointerY)
+      if (overlay) overlay.style.display = ""
+      const target = el && el !== document.documentElement ? el : document.body
+      const { selector, tag } = buildSelector(target)
+      const rect = target.getBoundingClientRect()
+      updateNote(note.id, {
+        anchor: {
+          selector,
+          tag,
+          offsetX: left - rect.left,
+          offsetY: top - rect.top,
+          fallbackX: left + window.scrollX,
+          fallbackY: top + window.scrollY,
+        },
+      })
+    },
+    [note.id, pos.x, pos.y, overlayRef, updateNote]
+  )
+
+  const dragStart = (e: React.PointerEvent) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    const startX = e.clientX
+    const startY = e.clientY
+    const target = e.currentTarget as HTMLElement
+    target.setPointerCapture(e.pointerId)
+    const move = (ev: PointerEvent) =>
+      setDrag({ dx: ev.clientX - startX, dy: ev.clientY - startY })
+    const up = (ev: PointerEvent) => {
+      target.removeEventListener("pointermove", move)
+      target.removeEventListener("pointerup", up)
+      reanchor(ev.clientX, ev.clientY, ev.clientX - startX, ev.clientY - startY)
+      setDrag(null)
+    }
+    target.addEventListener("pointermove", move)
+    target.addEventListener("pointerup", up)
+  }
+
+  const resizeStart = (e: React.PointerEvent) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    e.stopPropagation()
+    const startX = e.clientX
+    const startY = e.clientY
+    const startW = note.size.w
+    const startH = note.size.h
+    const target = e.currentTarget as HTMLElement
+    target.setPointerCapture(e.pointerId)
+    const move = (ev: PointerEvent) =>
+      updateNote(note.id, {
+        size: {
+          w: Math.max(140, startW + ev.clientX - startX),
+          h: Math.max(110, startH + ev.clientY - startY),
+        },
+      })
+    const up = () => {
+      target.removeEventListener("pointermove", move)
+      target.removeEventListener("pointerup", up)
+    }
+    target.addEventListener("pointermove", move)
+    target.addEventListener("pointerup", up)
+  }
 
   if (note.minimized) {
     return (
@@ -86,7 +158,9 @@ export function NoteCard({ note }: { note: StickyNote }) {
         height: note.size.h,
         background: colors.bg,
         borderRadius: 4,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+        boxShadow: drag
+          ? "0 12px 28px rgba(0,0,0,0.35)"
+          : "0 4px 12px rgba(0,0,0,0.2)",
         pointerEvents: "auto",
         display: "flex",
         flexDirection: "column",
@@ -94,12 +168,13 @@ export function NoteCard({ note }: { note: StickyNote }) {
     >
       <div
         data-sticky-note-strip=""
+        onPointerDown={dragStart}
         style={{
           height: 24,
           flexShrink: 0,
           background: colors.strip,
           borderRadius: "4px 4px 0 0",
-          cursor: "grab",
+          cursor: drag ? "grabbing" : "grab",
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",
@@ -150,6 +225,22 @@ export function NoteCard({ note }: { note: StickyNote }) {
           lineHeight: 1.4,
           color: "#1f2937",
           fontFamily: "inherit",
+        }}
+      />
+      <div
+        title="Resize"
+        onPointerDown={resizeStart}
+        style={{
+          position: "absolute",
+          right: 0,
+          bottom: 0,
+          width: 14,
+          height: 14,
+          cursor: "nwse-resize",
+          touchAction: "none",
+          background:
+            "linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.25) 50%)",
+          borderRadius: "0 0 4px 0",
         }}
       />
     </div>
