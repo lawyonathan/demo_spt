@@ -3,8 +3,8 @@ import "./globals.css";
 import { AppStickyNotes } from "@/components/sticky-notes-app-provider";
 
 export const metadata: Metadata = {
-  title: "Design System - reUI & cult-ui Inspired Components",
-  description: "A comprehensive design system built on shadcn/ui with reUI and cult-ui inspired components",
+  title: "Design System - Customized shadcn/ui Components",
+  description: "A comprehensive design system of customized components built on shadcn/ui",
 };
 
 export default function RootLayout({
