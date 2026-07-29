@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AppStickyNotes } from "@/components/sticky-notes-app-provider";
 
 export const metadata: Metadata = {
-  title: "Design System - reUI & cult-ui Inspired Components",
-  description: "A comprehensive design system built on shadcn/ui with reUI and cult-ui inspired components",
+  title: "Design System - Customized shadcn/ui Components",
+  description: "A comprehensive design system of customized components built on shadcn/ui",
 };
 
 export default function RootLayout({
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AppStickyNotes>{children}</AppStickyNotes>
+      </body>
     </html>
   );
 }

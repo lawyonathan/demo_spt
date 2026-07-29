@@ -10,31 +10,32 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { Alert, AlertTitle, AlertDescription } from "@/components/reui/alert";
-import { Badge } from "@/components/reui/badge";
-import { Frame } from "@/components/reui/frame";
-import { Timeline, TimelineItem } from "@/components/reui/timeline";
-import { Stepper, Step } from "@/components/reui/stepper";
-import { Rating } from "@/components/reui/rating";
-import { NumberField } from "@/components/reui/number-field";
-import { Autocomplete } from "@/components/reui/autocomplete";
-import { PhoneInput } from "@/components/reui/phone-input";
-import { FileUpload } from "@/components/reui/file-upload";
-import { Tree } from "@/components/reui/tree";
-import { DateSelector } from "@/components/reui/date-selector";
-import { Sortable } from "@/components/reui/sortable";
-import { Kanban, type KanbanColumn } from "@/components/reui/kanban";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Frame } from "@/components/ui/frame";
+import { Timeline, TimelineItem } from "@/components/ui/timeline";
+import { Stepper, Step } from "@/components/ui/stepper";
+import { Rating } from "@/components/ui/rating";
+import { NumberField } from "@/components/ui/number-field";
+import { Autocomplete } from "@/components/ui/autocomplete";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { FileUpload } from "@/components/ui/file-upload";
+import { Tree } from "@/components/ui/tree";
+import { DateSelector } from "@/components/ui/date-selector";
+import { Sortable } from "@/components/ui/sortable";
+import { Kanban, type KanbanColumn } from "@/components/ui/kanban";
+import { Gantt, type GanttTask } from "@/components/ui/gantt";
 
-import { GradientHeading } from "@/components/cult/gradient-heading";
-import { TextAnimate } from "@/components/cult/text-animate";
-import { Typewriter } from "@/components/cult/typewriter";
-import { AnimatedNumber } from "@/components/cult/animated-number";
-import { DynamicIsland, DynamicIslandContent, useDynamicIsland } from "@/components/cult/dynamic-island";
-import { DirectionAwareTabs } from "@/components/cult/direction-aware-tabs";
-import { ExpandableCard } from "@/components/cult/expandable-card";
-import { ColorPicker } from "@/components/cult/color-picker";
-import { LightBoard } from "@/components/cult/lightboard";
-import { MacOSDock } from "@/components/cult/macos-dock";
+import { GradientHeading } from "@/components/ui/gradient-heading";
+import { TextAnimate } from "@/components/ui/text-animate";
+import { Typewriter } from "@/components/ui/typewriter";
+import { AnimatedNumber } from "@/components/ui/animated-number";
+import { DynamicIsland, DynamicIslandContent, useDynamicIsland } from "@/components/ui/dynamic-island";
+import { DirectionAwareTabs } from "@/components/ui/direction-aware-tabs";
+import { ExpandableCard } from "@/components/ui/expandable-card";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { LightBoard } from "@/components/ui/lightboard";
+import { MacOSDock } from "@/components/ui/macos-dock";
 
 import {
   CheckCircle2, Music, Home, Mail, Settings,
@@ -92,6 +93,22 @@ export default function HomePage() {
     },
   ]);
 
+  const ganttGroups = [
+    { id: "web", name: "Website Redesign" },
+    { id: "app", name: "Mobile App" },
+    { id: "mkt", name: "Marketing" },
+  ];
+  const [ganttTasks, setGanttTasks] = React.useState<GanttTask[]>([
+    { id: "g1", name: "Discovery & research", start: "2026-01-05", end: "2026-02-13", progress: 100, groupId: "web" },
+    { id: "g2", name: "Design system", start: "2026-02-02", end: "2026-03-27", progress: 80, groupId: "web" },
+    { id: "g3", name: "Frontend build", start: "2026-03-16", end: "2026-06-30", progress: 45, groupId: "web" },
+    { id: "g4", name: "API integration", start: "2026-05-04", end: "2026-07-31", progress: 20, groupId: "app" },
+    { id: "g5", name: "Beta program", start: "2026-08-03", end: "2026-09-25", progress: 0, groupId: "app" },
+    { id: "g6", name: "App store launch", start: "2026-10-01", end: "2026-10-30", progress: 0, groupId: "app" },
+    { id: "g7", name: "Brand campaign", start: "2026-04-01", end: "2026-08-28", progress: 35, groupId: "mkt" },
+    { id: "g8", name: "Holiday push", start: "2026-10-12", end: "2026-12-18", progress: 0, groupId: "mkt" },
+  ]);
+
   const island = useDynamicIsland({
     sizes: ["compact", "default", "large"],
     defaultSize: "compact",
@@ -106,9 +123,7 @@ export default function HomePage() {
           id: "components",
           label: "components",
           children: [
-            { id: "ui", label: "ui", children: [{ id: "button.tsx", label: "button.tsx" }, { id: "input.tsx", label: "input.tsx" }] },
-            { id: "reui", label: "reui", children: [{ id: "alert.tsx", label: "alert.tsx" }, { id: "badge.tsx", label: "badge.tsx" }] },
-            { id: "cult", label: "cult", children: [{ id: "dynamic-island.tsx", label: "dynamic-island.tsx" }] },
+            { id: "ui", label: "ui", children: [{ id: "button.tsx", label: "button.tsx" }, { id: "input.tsx", label: "input.tsx" }, { id: "alert.tsx", label: "alert.tsx" }, { id: "badge.tsx", label: "badge.tsx" }, { id: "dynamic-island.tsx", label: "dynamic-island.tsx" }] },
           ],
         },
         { id: "lib", label: "lib", children: [{ id: "utils.ts", label: "utils.ts" }] },
@@ -142,7 +157,7 @@ export default function HomePage() {
           Design System
         </GradientHeading>
         <TextAnimate
-          text="Built with shadcn/ui + reUI + cult-ui inspired components"
+          text="One library of customized components built on shadcn/ui"
           type="fadeInUp"
           by="word"
           className="text-lg text-muted-foreground"
@@ -150,8 +165,8 @@ export default function HomePage() {
         />
         <div className="flex justify-center gap-2 mt-4">
           <Badge variant="soft-info">shadcn/ui Base</Badge>
-          <Badge variant="soft-success">17 reUI Components</Badge>
-          <Badge variant="soft" shape="pill">11 cult-ui Components</Badge>
+          <Badge variant="soft-success">18 Extended Components</Badge>
+          <Badge variant="soft" shape="pill">11 Motion Components</Badge>
         </div>
       </div>
 
@@ -212,7 +227,13 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Alert" description="Contextual notifications with 10 variants (reUI)">
+      <Section title="Gantt" description="Project timelines with draggable, resizable bars across day-to-year scales">
+        <Gantt tasks={ganttTasks} groups={ganttGroups} defaultScale="month" onTasksChange={setGanttTasks} />
+      </Section>
+
+      <Separator />
+
+      <Section title="Alert" description="Contextual notifications with 10 variants">
         <div className="grid gap-3 md:grid-cols-2">
           <Alert variant="success"><AlertTitle>Success</AlertTitle><AlertDescription>Operation completed successfully.</AlertDescription></Alert>
           <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>Something went wrong.</AlertDescription></Alert>
@@ -225,7 +246,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Badge" description="Status indicators with 16 variants (reUI)">
+      <Section title="Badge" description="Status indicators with 16 variants">
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
             <Badge>Default</Badge>
@@ -254,7 +275,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Frame" description="Card-like wrapper with 8 variants (reUI)">
+      <Section title="Frame" description="Card-like wrapper with 8 variants">
         <div className="grid gap-4 md:grid-cols-3">
           <Frame header="Default Frame" variant="default"><p className="text-sm text-muted-foreground">Standard frame with border and shadow.</p></Frame>
           <Frame header="Elevated" variant="elevated"><p className="text-sm text-muted-foreground">Elevated frame with more shadow.</p></Frame>
@@ -264,7 +285,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Timeline" description="Event sequences and activity feeds (reUI)">
+      <Section title="Timeline" description="Event sequences and activity feeds">
         <Timeline>
           <TimelineItem status="completed" title="Project Kickoff" description="Initial planning and team alignment" timestamp="Jan 15, 2025" />
           <TimelineItem status="completed" title="Design Phase" description="Created wireframes and visual designs" timestamp="Feb 1, 2025" icon={<CheckCircle2 className="h-4 w-4" />} />
@@ -276,7 +297,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Stepper" description="Multi-step forms with per-step validation (reUI)">
+      <Section title="Stepper" description="Multi-step forms with per-step validation">
         <div className="space-y-6">
           <Stepper activeStep={activeStep} onStepClick={setActiveStep} orientation="horizontal">
             <Step label="Account" description="Create your account" />
@@ -293,7 +314,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Interactive Controls" description="Rating, NumberField, PhoneInput, Autocomplete (reUI)">
+      <Section title="Interactive Controls" description="Rating, NumberField, PhoneInput, Autocomplete">
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader><CardTitle>Rating</CardTitle></CardHeader>
@@ -323,13 +344,13 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="File Upload" description="Multi-file with dropzone support (reUI)">
+      <Section title="File Upload" description="Multi-file with dropzone support">
         <div className="max-w-lg"><FileUpload accept="image/*,.pdf" multiple maxSize={5 * 1024 * 1024} /></div>
       </Section>
 
       <Separator />
 
-      <Section title="Date Selector" description="Range picker with calendar and presets (reUI)">
+      <Section title="Date Selector" description="Range picker with calendar and presets">
         <div className="flex flex-wrap gap-4">
           <div className="space-y-2"><Label>Single Date</Label><DateSelector mode="single" /></div>
           <div className="space-y-2"><Label>Date Range with Presets</Label><DateSelector mode="range" showPresets /></div>
@@ -338,13 +359,13 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Tree View" description="Hierarchical display with expand/collapse (reUI)">
+      <Section title="Tree View" description="Hierarchical display with expand/collapse">
         <Card className="max-w-sm"><CardContent className="p-3"><Tree data={treeData} showIcons showLines /></CardContent></Card>
       </Section>
 
       <Separator />
 
-      <Section title="Sortable List" description="Drag-and-drop list reordering (reUI)">
+      <Section title="Sortable List" description="Drag-and-drop list reordering">
         <div className="max-w-md">
           <Sortable items={sortItems} onReorder={setSortItems} renderItem={(item) => <span className="text-sm font-medium">{item.title}</span>} variant="cards" />
         </div>
@@ -352,7 +373,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Kanban Board" description="Drag-and-drop task boards (reUI)">
+      <Section title="Kanban Board" description="Drag-and-drop task boards">
         <Kanban
           columns={kanbanColumns}
           onColumnsChange={setKanbanColumns}
@@ -371,13 +392,13 @@ export default function HomePage() {
       <Separator />
 
       <div className="text-center space-y-2">
-        <GradientHeading variant="purple" size="lg" as="h2">cult-ui Inspired Components</GradientHeading>
+        <GradientHeading variant="purple" size="lg" as="h2">Motion & Expressive Components</GradientHeading>
         <p className="text-muted-foreground">Animation-forward, visually distinctive components</p>
       </div>
 
       <Separator />
 
-      <Section title="Dynamic Island" description="Animated notification surface (cult-ui)">
+      <Section title="Dynamic Island" description="Animated notification surface">
         <div className="flex flex-col items-center gap-4">
           <DynamicIsland size={island.currentSize} onClick={island.toggle}>
             <DynamicIslandContent>
@@ -398,7 +419,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Typography Effects" description="Gradient heading, text animations, typewriter (cult-ui)">
+      <Section title="Typography Effects" description="Gradient heading, text animations, typewriter">
         <div className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-3">
@@ -435,7 +456,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Direction Aware Tabs" description="Animated tabs with directional transitions (cult-ui)">
+      <Section title="Direction Aware Tabs" description="Animated tabs with directional transitions">
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <Label className="mb-2 block">Default</Label>
@@ -458,7 +479,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Expandable Card" description="Cards with smooth expand/collapse (cult-ui)">
+      <Section title="Expandable Card" description="Cards with smooth expand/collapse">
         <div className="grid gap-4 md:grid-cols-3">
           <ExpandableCard title="Getting Started" description="Quick setup guide" icon={<Zap className="h-5 w-5 text-warning" />}>
             <p className="text-sm text-muted-foreground">Install the package and start using components right away.</p>
@@ -474,7 +495,7 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="Color Picker" description="Full-featured color picker with presets (cult-ui)">
+      <Section title="Color Picker" description="Full-featured color picker with presets">
         <div className="flex gap-6 flex-wrap">
           <ColorPicker />
           <div className="space-y-2"><Label>Compact Variant</Label><ColorPicker variant="compact" /></div>
@@ -483,13 +504,13 @@ export default function HomePage() {
 
       <Separator />
 
-      <Section title="LightBoard" description="Interactive generative light display (cult-ui)">
+      <Section title="LightBoard" description="Interactive generative light display">
         <div className="flex justify-center"><LightBoard rows={8} columns={16} autoPlay speed={200} /></div>
       </Section>
 
       <Separator />
 
-      <Section title="MacOS Dock" description="Dock with magnification effect (cult-ui)">
+      <Section title="MacOS Dock" description="Dock with magnification effect">
         <div className="flex justify-center py-8"><MacOSDock items={dockItems} /></div>
       </Section>
 
@@ -508,17 +529,17 @@ export default function HomePage() {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-success" />reUI Inspired</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-success" />Extended</CardTitle></CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-1">
-                {["Alert", "Badge", "Frame", "Timeline", "Stepper", "Rating", "NumberField", "Autocomplete", "PhoneInput", "FileUpload", "Tree", "Scrollspy", "Sortable", "DataGrid", "DateSelector", "Filters", "Kanban"].map((c) => (
+                {["Alert", "Badge", "Frame", "Timeline", "Stepper", "Rating", "NumberField", "Autocomplete", "PhoneInput", "FileUpload", "Tree", "Scrollspy", "Sortable", "DataGrid", "DateSelector", "Filters", "Kanban", "Gantt"].map((c) => (
                   <Badge key={c} variant="soft-success" size="sm">{c}</Badge>
                 ))}
               </div>
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-info" />cult-ui Inspired</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-info" />Motion & Expressive</CardTitle></CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-1">
                 {["DynamicIsland", "GradientHeading", "TextAnimate", "Typewriter", "AnimatedNumber", "FloatingPanel", "DirectionAwareTabs", "ExpandableCard", "ColorPicker", "LightBoard", "MacOSDock"].map((c) => (
@@ -531,7 +552,7 @@ export default function HomePage() {
       </Section>
 
       <div className="text-center py-8">
-        <p className="text-sm text-muted-foreground">46 total components &middot; 18 base &middot; 17 reUI-inspired &middot; 11 cult-ui inspired</p>
+        <p className="text-sm text-muted-foreground">47 total components &middot; 18 base &middot; 18 extended &middot; 11 motion</p>
       </div>
     </div>
   );

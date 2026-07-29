@@ -159,6 +159,9 @@ function Kanban({
   className,
   variant = "default",
 }: KanbanProps) {
+  // dnd-kit's auto-generated context id differs between server and client,
+  // causing a hydration mismatch on aria-describedby; useId is SSR-stable.
+  const dndId = React.useId();
   const [activeCard, setActiveCard] = React.useState<KanbanCard | null>(null);
 
   const sensors = useSensors(
@@ -236,6 +239,7 @@ function Kanban({
 
   return (
     <DndContext
+      id={dndId}
       sensors={sensors}
       collisionDetection={closestCorners}
       onDragStart={handleDragStart}
