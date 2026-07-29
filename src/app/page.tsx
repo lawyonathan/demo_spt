@@ -24,6 +24,7 @@ import { Tree } from "@/components/ui/tree";
 import { DateSelector } from "@/components/ui/date-selector";
 import { Sortable } from "@/components/ui/sortable";
 import { Kanban, type KanbanColumn } from "@/components/ui/kanban";
+import { Gantt, type GanttTask } from "@/components/ui/gantt";
 
 import { GradientHeading } from "@/components/ui/gradient-heading";
 import { TextAnimate } from "@/components/ui/text-animate";
@@ -92,6 +93,22 @@ export default function HomePage() {
     },
   ]);
 
+  const ganttGroups = [
+    { id: "web", name: "Website Redesign" },
+    { id: "app", name: "Mobile App" },
+    { id: "mkt", name: "Marketing" },
+  ];
+  const [ganttTasks, setGanttTasks] = React.useState<GanttTask[]>([
+    { id: "g1", name: "Discovery & research", start: "2026-01-05", end: "2026-02-13", progress: 100, groupId: "web" },
+    { id: "g2", name: "Design system", start: "2026-02-02", end: "2026-03-27", progress: 80, groupId: "web" },
+    { id: "g3", name: "Frontend build", start: "2026-03-16", end: "2026-06-30", progress: 45, groupId: "web" },
+    { id: "g4", name: "API integration", start: "2026-05-04", end: "2026-07-31", progress: 20, groupId: "app" },
+    { id: "g5", name: "Beta program", start: "2026-08-03", end: "2026-09-25", progress: 0, groupId: "app" },
+    { id: "g6", name: "App store launch", start: "2026-10-01", end: "2026-10-30", progress: 0, groupId: "app" },
+    { id: "g7", name: "Brand campaign", start: "2026-04-01", end: "2026-08-28", progress: 35, groupId: "mkt" },
+    { id: "g8", name: "Holiday push", start: "2026-10-12", end: "2026-12-18", progress: 0, groupId: "mkt" },
+  ]);
+
   const island = useDynamicIsland({
     sizes: ["compact", "default", "large"],
     defaultSize: "compact",
@@ -148,7 +165,7 @@ export default function HomePage() {
         />
         <div className="flex justify-center gap-2 mt-4">
           <Badge variant="soft-info">shadcn/ui Base</Badge>
-          <Badge variant="soft-success">17 Extended Components</Badge>
+          <Badge variant="soft-success">18 Extended Components</Badge>
           <Badge variant="soft" shape="pill">11 Motion Components</Badge>
         </div>
       </div>
@@ -206,6 +223,12 @@ export default function HomePage() {
             </CardContent>
           </Card>
         </div>
+      </Section>
+
+      <Separator />
+
+      <Section title="Gantt" description="Project timelines with draggable, resizable bars across day-to-year scales">
+        <Gantt tasks={ganttTasks} groups={ganttGroups} defaultScale="month" onTasksChange={setGanttTasks} />
       </Section>
 
       <Separator />
@@ -509,7 +532,7 @@ export default function HomePage() {
             <CardHeader><CardTitle className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-success" />Extended</CardTitle></CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-1">
-                {["Alert", "Badge", "Frame", "Timeline", "Stepper", "Rating", "NumberField", "Autocomplete", "PhoneInput", "FileUpload", "Tree", "Scrollspy", "Sortable", "DataGrid", "DateSelector", "Filters", "Kanban"].map((c) => (
+                {["Alert", "Badge", "Frame", "Timeline", "Stepper", "Rating", "NumberField", "Autocomplete", "PhoneInput", "FileUpload", "Tree", "Scrollspy", "Sortable", "DataGrid", "DateSelector", "Filters", "Kanban", "Gantt"].map((c) => (
                   <Badge key={c} variant="soft-success" size="sm">{c}</Badge>
                 ))}
               </div>
@@ -529,7 +552,7 @@ export default function HomePage() {
       </Section>
 
       <div className="text-center py-8">
-        <p className="text-sm text-muted-foreground">46 total components &middot; 18 base &middot; 17 extended &middot; 11 motion</p>
+        <p className="text-sm text-muted-foreground">47 total components &middot; 18 base &middot; 18 extended &middot; 11 motion</p>
       </div>
     </div>
   );
