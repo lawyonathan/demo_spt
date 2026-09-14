@@ -1,26 +1,18 @@
 <overview>
-Feedback and media patterns: how an app tells people what is happening (inline status, progress, confirmations, warnings, haptics, notifications) and how it plays audio and video, plus sharing, live-TV, and workout experiences built on those mechanisms.
+Feedback and media patterns: how an app tells people what is happening (inline status, progress, confirmations, warnings, haptics, notifications), how it plays audio and video, and the sharing, live-TV, and workout experiences built on those mechanisms.
 Distills the HIG pages feedback, loading, managing-notifications, playing-audio, playing-video, playing-haptics, collaboration-and-sharing, live-viewing-apps, workouts.
-Load when designing or reviewing loading states, progress or completion feedback, alerts vs passive status, notifications, audio sessions and routing, video players and PiP, haptics, share sheets and collaboration UI, live-TV/EPG/DVR features, or workout sessions.
-Component detail (alerts, progress indicators, notifications, activity views, SharePlay, activity rings, ornaments) lives in the component references.
+Load when designing or reviewing loading states, progress or completion feedback, alerts vs passive status, notifications, audio sessions and routing, video players and PiP, haptics, share and collaboration UI, live-TV/EPG/DVR features, or workout sessions. Component detail (alerts, progress indicators, notifications, activity views, SharePlay, activity rings, ornaments) lives in the component references.
 </overview>
 
 <topic name="Feedback" source="https://developer.apple.com/design/human-interface-guidelines/feedback" updated="undated">
-Feedback tells people what is happening, what they can do next, the result of an action, and how to avoid mistakes. Match the significance of the information to how disruptively it is delivered.
-
-<when_to_use>
-- Feedback covers: current status; success or failure of an important task; a warning about a harmful action; a chance to correct a mistake.
-- Passive in-context display for status people check when they want (Mail: last update time and unread count in the mailbox toolbar).
-- Interrupting alert only for critical, ideally actionable, information such as unexpected, irreversible data loss.
-- Success confirmation only for sufficiently important actions (an Apple Pay transaction); people expect success and mostly need to know when something fails.
-</when_to_use>
+Feedback tells people what is happening (status), whether an important task succeeded or failed, warns about harmful actions, and offers a chance to correct mistakes. Match the significance of the information to how disruptively it is delivered: status is shown passively; a possible data loss interrupts.
 
 <best_practices>
 - **Make sure all feedback is accessible.** Use several channels (color, text, sound, haptics) so it reaches people who silenced the device, look away, or use VoiceOver.
-- **Consider integrating status feedback into your interface.** Status near the items it describes needs no action or context switch.
+- **Consider integrating status feedback into your interface.** Status near the items it describes needs no action or context switch (Mail: last update time and unread count in the mailbox toolbar).
 - **Use alerts to deliver critical, ideally actionable, information.** Alerts disrupt; overuse or trivial content drains their impact.
 - **Warn people when they initiate a task that can cause unexpected, irreversible data loss.** Not when loss is the expected result (Finder doesn't warn on every file deletion).
-- **When it makes sense, confirm that a significant action or task completed.**
+- **When it makes sense, confirm that a significant action completed.** Reserve for important activities like an Apple Pay transaction; people expect success and mostly need to know when something fails.
 - **Show people when a command can't be carried out and help them understand why.** Maps explains it can't route to and from the same location.
 </best_practices>
 
@@ -246,13 +238,7 @@ watchOS haptics:
 </topic>
 
 <topic name="Collaboration and sharing" source="https://developer.apple.com/design/human-interface-guidelines/collaboration-and-sharing" updated="2023-12-05">
-Great collaboration and sharing is simple and responsive: people engage with content while communicating with others. The share sheet, sharing popover, Collaboration button, and Messages integration work with CloudKit, iCloud Drive, or a custom solution; custom infrastructure must also support universal links. Real-time shared activities are SharePlay (shareplay page).
-
-<when_to_use>
-- Sharing or collaboration starts by dropping a document into a Messages conversation or choosing a destination in the share sheet.
-- Once underway, the Collaboration button is where people communicate, run custom actions, and manage details; Messages notifies people when collaborators mention them, make changes, join, or leave.
-- Doing an activity together in real time from separate devices is SharePlay, not document collaboration.
-</when_to_use>
+Great collaboration and sharing is simple and responsive: people engage with content while communicating with others. Sharing starts by dropping a document into a Messages conversation or choosing a destination in the share sheet; afterward the Collaboration button is where people communicate, run custom actions, and manage details, and Messages notifies them when collaborators mention them, make changes, join, or leave. These system interfaces work with CloudKit, iCloud Drive, or a custom solution (which must also support universal links). Doing an activity together in real time is SharePlay (shareplay page), not document collaboration.
 
 <best_practices>
 - **Place the Share button in a convenient location, like a toolbar.** Since iOS 16 the share sheet lets people pick a file-sharing method and set permissions for a new collaboration; iPadOS 16 and macOS 13 do the same in the sharing popover. SwiftUI: `ShareLink` opens the share sheet.
