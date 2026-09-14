@@ -8,11 +8,10 @@ Load when choosing font sizes or weights, building a type scale, mapping a desig
 Typographic choices help display legible text, convey an information hierarchy, communicate important content, and express brand or style. Core rule: use the system fonts and built-in text styles at or above each platform's default size, and avoid light weights.
 
 <when_to_use>
-- Use San Francisco (SF) for interface text: SF Pro on iOS, iPadOS, macOS, tvOS, and visionOS; SF Compact on watchOS (SF Compact Rounded in complications); SF Mono for monospaced text; SF Arabic, SF Armenian, SF Georgian, SF Hebrew for those scripts.
-- Use the rounded variants (SF Pro, SF Compact, SF Arabic, SF Armenian, SF Georgian, SF Hebrew) to coordinate text with soft or rounded UI elements or as an alternative typographic voice.
-- Use New York (NY), the serif family, alone or alongside SF; available in iOS, iPadOS, tvOS, watchOS, visionOS (specify the type styles you want), and Mac Catalyst apps. In SwiftUI `Font.Design.default` is the system font and `Font.Design.serif` is NY.
+- Use San Francisco (SF) for interface text: SF Pro on iOS, iPadOS, macOS, tvOS, visionOS; SF Compact on watchOS (SF Compact Rounded in complications); SF Mono for monospaced text; SF Arabic, SF Armenian, SF Georgian, SF Hebrew for those scripts. Rounded variants of SF Pro, SF Compact, SF Arabic, SF Armenian, SF Georgian, and SF Hebrew suit soft or rounded UI or an alternative voice.
+- Use New York (NY), the serif family, alone or alongside SF; available in iOS, iPadOS, tvOS, watchOS, visionOS (specify the type styles you want), and Mac Catalyst apps. SwiftUI: `Font.Design.default` is the system font, `Font.Design.serif` is NY.
 - Use the built-in text styles for hierarchy and adjust them with symbolic traits rather than inventing sizes.
-- Use a custom font only if it stays legible at the platform minimum sizes and implements Dynamic Type and Bold Text behaviors.
+- Use a custom font only if it stays legible at the platform minimum sizes and implements Dynamic Type and Bold Text.
 - Use SF Symbols to convey a concept or object within text; their weights match SF exactly.
 </when_to_use>
 
@@ -223,29 +222,26 @@ Dynamic Type is a system-level feature in iOS, iPadOS, tvOS, visionOS, and watch
 
 <decision_guide>
 - Body copy: Body text style at the platform default (17 pt iOS/iPadOS/visionOS, 13 macOS, 29 tvOS, 16 watchOS); never below the minimum (11, 10, 23, 12, 12).
-- Screen or section title: Large Title, Title 1, Title 2, Title 3 in descending importance; visionOS adds Extra Large Title 1 and 2 for editorial layouts.
+- Titles: Large Title, Title 1, Title 2, Title 3 in descending importance; visionOS adds Extra Large Title 1 and 2 for editorial layouts.
 - Emphasis within a level: `bold()` or `traitBold` (Bold for Large Title, Title 1, Title 2; Semibold for most others; macOS Headline goes Heavy), not a new size (2025).
 - Secondary or metadata text: Subhead, Footnote, Caption 1, Caption 2 (watchOS: Caption 1 and 2, Footnote 1 and 2).
-- Wide columns or long passages: loose leading. Height-constrained rows of one or two lines: tight leading. Three or more lines: never tight.
-- Need a serif voice: NY via `Font.Design.serif`. Soft or rounded UI: SF Rounded. Code or tabular data: SF Mono.
-- Custom brand font: only if legible at minimum sizes, Regular or heavier, and wired to Dynamic Type and Bold Text; otherwise stay with SF.
-- Text next to icons: SF Symbols so weight and scaling match.
+- Leading: loose for wide columns or long passages; tight only for one or two constrained lines; never tight for three or more.
+- Serif voice: NY via `Font.Design.serif`. Soft or rounded UI: SF Rounded. Code or tabular data: SF Mono. Text next to icons: SF Symbols.
+- Custom brand font: only if legible at minimum sizes, Regular or heavier, and wired to Dynamic Type and Bold Text.
 - Accessibility sizes (AX1 to AX5): stack inline items, drop columns, allow multi-line labels, keep primary elements on top, keep tab titles and transient values fixed.
-- macOS control text: dynamic variants (`labelFont`, `menuFont`, `toolTipsFont`, etc.) so it matches system controls.
-- visionOS spatial labels: 2D, bold instead of shadowed, billboarded toward the wearer.
+- macOS control text: dynamic variants (`labelFont`, `menuFont`, `toolTipsFont`, and so on). visionOS spatial labels: 2D, bold instead of shadowed, billboarded toward the wearer.
 </decision_guide>
 
 <quick_checklist>
-- [ ] Body text is at or above the platform default size and nothing falls below the minimum?
-- [ ] No Ultralight, Thin, or Light weights, and thin custom fonts are sized up?
-- [ ] Hierarchy uses built-in text styles (or a small set of custom sizes) with few typefaces?
+- [ ] Body text at or above the platform default, nothing below the minimum?
+- [ ] No Ultralight, Thin, or Light weights; thin custom fonts sized up?
+- [ ] Hierarchy uses built-in text styles with few typefaces?
 - [ ] Emphasis uses symbolic traits with the documented emphasized weights (2025)?
-- [ ] Leading is loose for long passages and never tight for three or more lines?
-- [ ] System fonts are loaded via `Font.Design`, not embedded?
-- [ ] Custom fonts support Dynamic Type and Bold Text?
-- [ ] Layout has been checked at the largest accessibility size with no clipped or truncated meaningful text?
+- [ ] Leading loose for long passages and never tight for three or more lines?
+- [ ] System fonts loaded via `Font.Design`, not embedded; custom fonts support Dynamic Type and Bold Text?
+- [ ] Layout checked at the largest accessibility size with no clipped or truncated meaningful text?
 - [ ] Inline items stack and columns collapse at accessibility sizes?
 - [ ] Meaningful icons (ideally SF Symbols) scale with text?
-- [ ] Primary elements stay near the top and tab titles do not grow with text size?
+- [ ] Primary elements stay near the top; tab titles and transient values do not grow?
 - [ ] macOS control text uses dynamic font variants; visionOS text is 2D, high contrast, and billboarded?
 </quick_checklist>

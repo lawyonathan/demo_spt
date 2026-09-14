@@ -6,9 +6,10 @@ Component detail (alerts, progress indicators, notifications, activity views, Sh
 </overview>
 
 <topic name="Feedback" source="https://developer.apple.com/design/human-interface-guidelines/feedback" updated="undated">
-Feedback tells people what is happening, what they can do next, the result of an action, and how to avoid mistakes. Match the significance of the information to how disruptively it is delivered: passive status stays in the interface; possible data loss interrupts.
+Feedback tells people what is happening, what they can do next, the result of an action, and how to avoid mistakes. Match the significance of the information to how disruptively it is delivered.
 
 <when_to_use>
+- Feedback covers: current status; success or failure of an important task; a warning about a harmful action; a chance to correct a mistake.
 - Passive in-context display for status people check when they want (Mail: last update time and unread count in the mailbox toolbar).
 - Interrupting alert only for critical, ideally actionable, information such as unexpected, irreversible data loss.
 - Success confirmation only for sufficiently important actions (an Apple Pay transaction); people expect success and mostly need to know when something fails.
@@ -16,7 +17,7 @@ Feedback tells people what is happening, what they can do next, the result of an
 
 <best_practices>
 - **Make sure all feedback is accessible.** Use several channels (color, text, sound, haptics) so it reaches people who silenced the device, look away, or use VoiceOver.
-- **Consider integrating status feedback into your interface.** Show status near the items it describes so people needn't act or leave their context.
+- **Consider integrating status feedback into your interface.** Status near the items it describes needs no action or context switch.
 - **Use alerts to deliver critical, ideally actionable, information.** Alerts disrupt; overuse or trivial content drains their impact.
 - **Warn people when they initiate a task that can cause unexpected, irreversible data loss.** Not when loss is the expected result (Finder doesn't warn on every file deletion).
 - **When it makes sense, confirm that a significant action or task completed.**
@@ -30,7 +31,6 @@ Feedback tells people what is happening, what they can do next, the result of an
 <anti_patterns>
 - Don't use alerts too often or for unimportant information.
 - Don't warn when data loss is the expected result of the action.
-- Don't rely on a single channel (color only, sound only).
 - watchOS: avoid indeterminate progress indicators.
 </anti_patterns>
 </topic>
@@ -41,7 +41,7 @@ The best content-loading experience finishes before people become aware of it; l
 <best_practices>
 - **Show something as soon as possible.** An empty wait reads as a broken app; show placeholder text, graphics, or animations and replace them as content arrives.
 - **Let people do other things while content loads.** Load in the background (a game loads the next level while players read about it or view a menu).
-- **If loading is unavoidably long, give people something interesting to view.** Gameplay hints, tips, new-feature introductions; gauge remaining time accurately so placeholder content is neither cut short nor repeated.
+- **If loading is unavoidably long, give people something interesting to view.** Gameplay hints, tips, new-feature introductions; gauge remaining time accurately so placeholders are neither cut short nor repeated.
 - **Improve installation and launch time by downloading large assets in the background (2025).** Use the Background Assets framework to schedule level packs, 3D character models, and textures right after installation, during updates, or at other nondisruptive times.
 - **Clearly communicate that content is loading and how long it might take.** Beyond a moment or two, use system progress indicators: determinate when you know the duration, indeterminate when you don't.
 - **For games, consider creating a custom loading view.** Standard indicators can feel out of place; match the game's style.
@@ -53,7 +53,6 @@ The best content-loading experience finishes before people become aware of it; l
 
 <anti_patterns>
 - Don't make people wait with nothing on screen.
-- Don't block other actions while content loads.
 - watchOS: avoid loading indicators where possible; never show a blank screen.
 </anti_patterns>
 </topic>
@@ -91,7 +90,6 @@ Notifications deliver timely, important information whether the device is locked
 <anti_patterns>
 - Don't send any notification without permission.
 - Don't inflate the interruption level for low-priority information.
-- Don't use Time Sensitive for anything not happening now or within an hour.
 - Never send marketing at the Time Sensitive level or without explicit opt in.
 - Don't omit an in-app settings screen for notification choices.
 </anti_patterns>
@@ -134,16 +132,14 @@ Audio session categories (`AVAudioSession.Category`):
 - **iOS, iPadOS:** Use the system sound services (Audio Services) for short sounds and vibrations.
 - **macOS:** Notification sounds mix with other audio by default.
 - **tvOS:** Audio plays only when people initiate it (in-app interaction, device calibration); no sounds accompany alerts or notifications.
-- **visionOS:** Subtle sounds are everywhere and give essential feedback for look-and-gesture interaction; Spatial Audio places sound in space. Never convey important information with sound alone. Now Playing app audio pauses when its window closes; other apps' audio can duck when people look away. Prefer playing sound: a silent app, especially in an immersive moment, feels lifeless or broken. Design custom sounds for custom elements (system elements already sound so people can locate them). Combine ambient audio (anchors people in a virtual world) with audio sources (sound from a specific object); a moved window keeps emitting from its new place. Vary repetitive sounds by randomizing pitch and volume at playback, as the virtual keyboard does, instead of shipping multiple files. Choose fixed sound (pointed at the wearer regardless of gaze; Mindfulness uses it to envelop) or tracked sound (from an object, changes with distance; usually better for realism).
+- **visionOS:** Subtle sounds give essential feedback for look-and-gesture interaction; Spatial Audio places sound in space. Never convey important information with sound alone. Now Playing app audio pauses when its window closes; other apps' audio can duck when people look away. Prefer playing sound (a silent app, especially in an immersive moment, feels lifeless or broken). Design custom sounds for custom elements; system elements already sound so people can locate them. Combine ambient audio (anchors people in a virtual world) with audio sources (sound from a specific object); a moved window keeps emitting from its new place. Vary repetitive sounds by randomizing pitch and volume at playback, as the virtual keyboard does. Choose fixed sound (pointed at the wearer regardless of gaze; Mindfulness uses it to envelop) or tracked sound (from an object, changes with distance; usually better for realism).
 - **watchOS:** The system manages playback; apps play short clips in the foreground or longer audio that continues after wrist-down or an app switch. Encode at 64 kbps HE-AAC. Consider the system Now Playing view so people control current or recent audio without leaving your app; it shows the current source (possibly another app on Apple Watch or iPhone) and auto-selects the current or most recent one.
 </platform_considerations>
 
 <anti_patterns>
-- Don't change the system volume; adjust only relative levels.
-- Don't block rerouting without a compelling reason.
-- Don't pick a category that silences other apps' music unnecessarily.
-- Don't respond to remote controls outside an audio context; don't redefine what a control means.
-- Don't build custom player controls when system ones suffice.
+- Don't adjust the system volume; adjust only relative levels.
+- Don't stop another app's music if you don't need to.
+- Don't respond to audio controls outside an audio context (it halts other apps' audio); don't repurpose them.
 - Don't auto-restart a mic session after a Smart Folio reopens.
 - visionOS: don't convey important information with sound alone.
 </anti_patterns>
@@ -170,19 +166,11 @@ Default playback mode is chosen by aspect ratio (people can switch during playba
 - **Support the interactions people expect on every input device.** Space on a connected keyboard plays or pauses on Apple Vision Pro, Mac, iPhone, iPad, and Apple TV; Siri Remote gestures move through media on Apple TV.
 - **In tvOS, add a transport control or custom content tab only for the most useful options.** Actions take a step or two at most, content stays succinct; transport control for playback actions (favoriting), content tab for supplementary information or recommendations.
 - **Avoid letting audio from different sources mix as viewers switch modes.** Typical failure: video goes to PiP (auto-muted), a game with music starts full-screen, the viewer unmutes PiP, and the game ignores secondary audio. Observe `silenceSecondaryAudioHintNotification`.
-
-TV app integration (starting playback in the TV app opens your app and transitions to it):
-- **Ensure a smooth transition.** The TV app fades to black and skips your launch screen; immediately show your own black screen before playing.
-- **Show the expected content immediately.** No splash, detail screens, intro animations, or other barriers. If an interstitial is unavoidable, Select steps through it and Play skips it.
-- **Avoid asking whether to resume playback.** Resume automatically, at the previous end time for long clips.
-- **Play or pause on Space from a connected Bluetooth keyboard.**
-- **Make sure content plays for the correct viewer.** Switch to the profile named in the request; if none, ask the viewer to choose one before playback.
-- **Avoid loading screens when possible.** If loading exceeds two seconds, show a black screen with a centered activity spinner and nothing else, only until enough content loads to begin; load the rest in the background. Keep branding minimal on the black background.
-- **On exit, show a contextually relevant screen.** People stay in your app: show a detail view for the content just watched with a resume option, else a menu listing it or the main menu. Prepare it as soon as the playback notification arrives in case people exit immediately.
+- TV app integration (starting playback there opens your app): **the TV app fades to black and skips your launch screen, so immediately show your own black screen, then jump straight into content** with no splash, detail screens, intro animations, or other barriers (if an interstitial is unavoidable, Select steps through it and Play skips it). **Resume automatically without asking**, at the previous end time for long clips. **Play or pause on Space from a connected Bluetooth keyboard.** **Switch to the profile named in the playback request**; if none, ask the viewer to choose one before playback. **Avoid loading screens**: only if loading exceeds two seconds, show a black screen with a centered activity spinner and nothing else, just until enough content loads to begin, loading the rest in the background, branding minimal. **On exit people stay in your app**: show a detail view for the content just watched with a resume option (else a menu listing it, or the main menu), prepared as soon as the playback notification arrives in case people exit immediately.
 </best_practices>
 
 <platform_considerations>
-- **tvOS:** Defer to content for logos and noninteractive overlays; a small logo or countdown timer is fine, large distracting overlays are not. Some devices suffer image retention, so keep overlays short and prefer translucent SDR graphics to bright, opaque content. For interactive overlays (quizzes, surveys, progress check-ins), pause after a minimum 0.5-second delay, then show the overlay with a clear way to dismiss and resume.
+- **tvOS:** Defer to content for logos and noninteractive overlays; a small logo or countdown timer is fine, large distracting overlays are not. Some devices suffer image retention, so keep overlays short and prefer translucent SDR graphics to bright, opaque content. For interactive overlays (quizzes, surveys, progress check-ins), pause after a minimum 0.5-second delay, show the overlay, and give a clear way to dismiss and resume.
 - **visionOS:** Keep people comfortable: let them choose when playback starts, use a small resizable window, keep surroundings visible. In a fully immersive experience the system places the player at a predictable optimal location; don't let virtual content occlude the playback or transport ornament near the bottom. Never auto-start fully immersive playback. Supply a thumbnail track for scrubbing, each thumbnail 160 px wide (HLS Trick Play). Don't expand an inline player to fill a window: inline video is 2D, controls sit in the window's plane, and visible surrounding content signals no immersive playback.
 - **watchOS:** The system manages playback; apps play short clips in the foreground, inline via a movie element or in a separate interface (`VideoPlayer`). Keep clips to 30 seconds or less (disk space, wrist fatigue). Don't scale clips. A poster image should represent the clip and never look like a system control; tapping it swaps in the video and plays inline.
 </platform_considerations>
@@ -199,7 +187,6 @@ watchOS media encoding:
 </specs>
 
 <anti_patterns>
-- Don't build a custom player that only slightly diverges from the system one.
 - Don't embed letterbox or pillarbox padding in the video frame.
 - Don't let secondary audio mix across full-screen and PiP switches.
 - TV app: don't show launch, splash, detail, or intro screens before content; don't ask to confirm resume; no loading screen unless loading exceeds two seconds.
@@ -220,10 +207,7 @@ Haptics engage touch and bring physical-world familiarity into an app or game. S
 - **In most apps, prefer short haptics that complement discrete events.** Long-running haptics suit gameplay flows but dilute meaning in apps; on Apple Pencil Pro, continuous haptics don't clarify writing or drawing and make holding the pencil less pleasant.
 - **Make haptics optional.** Provide an off or mute setting; the app must remain enjoyable without them.
 - **Be aware that haptics might impact other experiences.** Vibration can disrupt the camera, gyroscope, or microphone.
-
-Custom haptics (Core Haptics; common in games, occasionally in apps):
-- **Transient** events are brief taps or impulses (the Flashlight button on the Home Screen); **continuous** events are sustained vibration (the lasers effect in a message).
-- Both take **sharpness** (soft, rounded, organic vs crisp, precise, mechanical) and **intensity** (strength). Combine event types, vary by input or context (a jump from a tree hits harder than a jump in place; a collision differs from approaching footsteps), and optionally add audio.
+- Custom haptics (Core Haptics; common in games, occasionally in apps): **transient** events are brief taps or impulses (the Flashlight button on the Home Screen); **continuous** events are sustained vibration (the lasers effect in a message). Both take **sharpness** (soft, rounded, organic vs crisp, precise, mechanical) and **intensity** (strength). Combine event types, vary by input or context (a jump from a tree hits harder than a jump in place; a collision differs from approaching footsteps), and optionally add audio.
 </best_practices>
 
 <platform_considerations>
@@ -256,7 +240,7 @@ watchOS haptics:
 - Don't use one pattern for both positive and negative outcomes.
 - Don't overuse haptics or play long-running haptics in nongame apps (especially on Apple Pencil Pro).
 - Don't make haptics mandatory.
-- Don't let vibration interfere with camera, gyroscope, or microphone use.
+- Don't let vibration disrupt camera, gyroscope, or microphone use.
 - watchOS: don't overuse Click or let clicks overlap.
 </anti_patterns>
 </topic>
@@ -289,7 +273,6 @@ Great collaboration and sharing is simple and responsive: people engage with con
 
 <anti_patterns>
 - Don't overwhelm people with permission options or nonessential items in the collaboration popover.
-- Don't skip universal-link support with custom collaboration infrastructure.
 </anti_patterns>
 </topic>
 
@@ -314,7 +297,6 @@ Live-viewing apps elevate live content over video on demand (VOD): on every scre
 - Don't let live and VOD content look alike.
 - Don't reorder secondary actions between screens.
 - Don't keep live audio playing after people leave the live tab.
-- Don't use different categories in the content footer and the EPG.
 </anti_patterns>
 </topic>
 
@@ -326,7 +308,7 @@ A workout experience keeps people engaged with the current activity and tracks p
 - **Avoid distracting people from a workout with irrelevant information.** No workout lists or other app areas mid-workout. Common arrangement (as in Workout): large session controls (End, Resume, New) on the leftmost screen; a dedicated glanceable metrics screen; media playback controls, if supported, on the rightmost screen.
 - **Use a distinct visual appearance to indicate an active workout.** Live-updating metrics plus a unique layout make the active state recognizable.
 - **Provide workout controls that are easy to find and tap.** Pause, resume, stop, with clear feedback when a session starts or stops.
-- **Help people understand the health information you record when sensor data is unavailable.** Water may block heart rate while distance and calories still record. For the Swimming or Other types, mirror the Workout app's wording: "GPS is not used during a Pool Swim, and water may prevent a heart-rate measurement, but Apple Watch will still track your calories, laps, and distance using the built-in accelerometer." / "In this type of workout, you earn the calorie equivalent of a brisk walk anytime sensor readings are unavailable." / "GPS will only provide distance when you do a freestyle stroke. Water might prevent a heart-rate measurement, but calories will still be tracked using the built-in accelerometer."
+- **Help people understand the health information you record when sensor data is unavailable.** Water may block heart rate while distance and calories still record. For the Swimming or Other types, mirror the Workout app's wording, e.g. "GPS is not used during a Pool Swim, and water may prevent a heart-rate measurement, but Apple Watch will still track your calories, laps, and distance using the built-in accelerometer." (Other: calorie equivalent of a brisk walk whenever sensor readings are unavailable; open water: GPS distance only during a freestyle stroke, calories via the accelerometer.)
 - **Provide a summary at the end of a session.** It confirms completion and shows recorded data; consider including Activity rings.
 - **Discard extremely brief workout sessions.** If a session ends a few seconds after it starts, discard automatically or ask whether to record it.
 - **Make sure text is legible when people are in motion.** Large font sizes, high-contrast colors, most important information easiest to read.
@@ -350,9 +332,8 @@ A workout experience keeps people engaged with the current activity and tracks p
 | Need | Mechanism |
 |---|---|
 | Current status they may check when curious (last sync, unread count) | Inline status text or badge near the item; passive, no interruption |
-| Something is loading, duration known | Determinate progress indicator; placeholders visible, other actions available |
-| Something is loading, duration unknown | Indeterminate progress indicator plus placeholders; on watchOS avoid spinners and promise a notification |
-| Loading takes more than a moment or two in a game | Custom loading view with tips or hints, timed to the real remaining duration |
+| Something is loading, duration known / unknown | Determinate / indeterminate progress indicator with placeholders and other actions available; on watchOS avoid spinners and promise a notification |
+| Long load in a game | Custom loading view with tips or hints, timed to the real remaining duration |
 | Video needs more than two seconds to buffer (TV app flow) | Black screen with a centered activity spinner, nothing else |
 | A value is changing or a control is being adjusted | Selection haptic (iOS) or Click / Digital Crown detents (watchOS); automatic with system controls |
 | A discrete physical moment (snap into place, collision) | Impact haptic matched to the animation's intensity and sharpness |
@@ -371,10 +352,9 @@ Pair every channel with another (text + color, haptic + visual, sound + visual) 
 "Media of type X" → playback pattern:
 | Media | Pattern |
 |---|---|
-| Nonessential game soundtrack or effects | Solo ambient (silences others) or Ambient (mixes); both obey the silence switch and stop in the background |
-| Essential audio people keep listening to (audiobook, lessons, music) | Playback category; ignores the silence switch, plays in the background; `MPVolumeView` for volume and routes; honor remote controls; check `shouldResume` after interruptions |
-| Recording (notes, voice) | Record category; switch to Playback for playback; decide whether calls may interrupt |
-| Calls or audio messaging | Play and record; end the call on Smart Folio close, never auto-restart the mic |
+| Nonessential game sound | Solo ambient or Ambient category (see audio table); obeys the silence switch, no background |
+| Essential audio people keep listening to (audiobook, lessons, music) | Playback category; `MPVolumeView` for volume and routes; honor remote controls; check `shouldResume` after interruptions |
+| Recording, calls, audio messaging | Record or Play and record category; end the call on Smart Folio close, never auto-restart the mic |
 | Short UI sounds or vibrations (iOS, iPadOS) | System sound services |
 | watchOS audio | Foreground clips or background audio; 64 kbps HE-AAC; consider the system Now Playing view |
 | Standard 2D video in an app | System player at original aspect ratio; aspect-fill for 2:1 to 2.40:1, fit-to-screen otherwise; PiP where available; Space plays or pauses |

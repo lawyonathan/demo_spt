@@ -10,10 +10,9 @@ Judicious color enhances communication, evokes brand, provides continuity, commu
 <when_to_use>
 - Use system and dynamic semantic colors by default; they define light, dark, and increased contrast variants.
 - Use custom colors for brand or personality, each with light, dark, and increased contrast variants.
-- Use grouped backgrounds (`systemGroupedBackground`, `secondarySystemGroupedBackground`, `tertiarySystemGroupedBackground`) for a grouped table view; otherwise `systemBackground`, `secondarySystemBackground`, `tertiarySystemBackground`.
-- Use `ColorPicker` when people choose colors; saved colors are reachable from any app.
-- (2025) Color the Liquid Glass background of one primary action (prominent button, such as Done); keep other toolbar and tab bar controls monochromatic.
-- (2025) Prefer monochromatic toolbars and tab bars over colorful content; use the brand color as app accent color when content is mostly monochromatic.
+- Use grouped backgrounds (`systemGroupedBackground` and its secondary and tertiary variants) for a grouped table view; otherwise `systemBackground` and its variants.
+- Use `ColorPicker` when people choose colors.
+- (2025) Color the Liquid Glass background of one primary action (prominent button, such as Done); keep other toolbar and tab bar controls monochromatic, especially over colorful content; use the brand color as accent when content is mostly monochromatic.
 </when_to_use>
 
 <best_practices>
@@ -63,7 +62,9 @@ Judicious color enhances communication, evokes brand, provides continuity, commu
 | Pink | `pink` |
 | Brown | `brown` |
 
-*iOS, iPadOS system grays (UIKit).* `systemGray` through `systemGray6`, each with default and increased contrast light and dark variants; SwiftUI `gray` equals `systemGray`.
+*iOS, iPadOS system grays (UIKit).* `systemGray`, `systemGray2`, `systemGray3`, `systemGray4`, `systemGray5`, `systemGray6`, each with default and increased contrast light and dark variants; SwiftUI `gray` equals `systemGray`.
+
+*iOS, iPadOS dynamic background colors (UIKit).* System set: `systemBackground`, `secondarySystemBackground`, `tertiarySystemBackground`. Grouped set: `systemGroupedBackground`, `secondarySystemGroupedBackground`, `tertiarySystemGroupedBackground`.
 
 *iOS, iPadOS dynamic foreground colors (UIKit `UIColor`)*
 | Color | Use for | API |
@@ -118,16 +119,10 @@ Judicious color enhances communication, evokes brand, provides continuity, commu
 </specs>
 
 <anti_patterns>
-- Avoid one color with two meanings (interactive versus decorative).
-- Avoid hard-coded system color values.
-- Avoid repurposing semantic colors (separator as text, secondary label as background).
-- Avoid color as the only carrier of meaning, interactivity, or state.
-- Avoid low-contrast or color-blind-indistinguishable combinations.
+- Avoid one color with two meanings; avoid hard-coded system values; avoid repurposing semantic colors (separator as text, secondary label as background).
+- Avoid color as the only carrier of meaning, interactivity, or state; avoid low-contrast or color-blind-indistinguishable pairs.
 - Avoid custom colors without light, dark, and increased contrast variants, even in single-appearance apps (2025).
-- (2025) Avoid coloring the Liquid Glass background of more than one control.
-- (2025) Avoid coloring symbols or text to emphasize a primary action; color the background.
-- (2025) Avoid control label colors similar to a colorful background.
-- (2025) Avoid similar colors overlapping between content layer and controls at rest.
+- (2025) Avoid coloring the Liquid Glass background of more than one control; avoid coloring symbols or text instead of the background for emphasis; avoid label colors similar to a colorful background; avoid similar colors overlapping between content and controls at rest.
 - tvOS: Avoid color alone to indicate focus.
 - visionOS: Avoid colored lightweight text or small areas; avoid bright objects on very dark or black backgrounds in immersive scenes, especially flashing or moving ones.
 - watchOS: Avoid full-screen background color in long-lived views.
@@ -167,43 +162,36 @@ Dark Mode is a systemwide appearance setting in iOS, iPadOS, macOS, and tvOS tha
 
 <anti_patterns>
 - Avoid an app-specific appearance setting.
-- Avoid hard-coded or non-adapting colors.
+- Avoid hard-coded or non-adapting colors, and avoid assuming dark colors are inversions of light ones.
 - Avoid contrast below 4.5:1 (7:1 target for custom colors and small text).
-- Avoid glowing white-background images.
-- Avoid single-appearance icons and illustrations that lose detail in the other mode.
+- Avoid glowing white-background images and single-appearance icons or illustrations that lose detail in the other mode.
 - Avoid drawing text yourself when a system view exists.
-- Avoid assuming dark colors are inversions of light ones.
 - iOS, iPadOS: Avoid custom backgrounds that defeat base versus elevated.
 - macOS: Avoid transparency on a custom component while it is in a colored state.
 </anti_patterns>
 </topic>
 
 <decision_guide>
-- Text, background, separator, or link color: the dynamic semantic color for that role (`label` family, `systemBackground` family, `separator`, `link`; macOS `labelColor`, `windowBackgroundColor`, etc.). Never swap roles.
-- Grouped table view: grouped background set; anything else: system set. Primary for the view, secondary for groups, tertiary for groups within groups.
-- Brand or custom color: Color Set with light, dark, increased contrast light, and increased contrast dark variants, even for single-appearance apps (2025).
-- One primary action in a Liquid Glass toolbar (2025): app accent color on that button's background; all other controls monochromatic.
-- Colorful or media content behind toolbar or tab bar (2025): monochromatic controls or a strongly differentiated accent. Monochromatic content: brand color as accent.
+- Text, background, separator, or link color: the dynamic semantic color for that role; never swap roles. Grouped table view: grouped background set; anything else: system set (primary view, secondary groups, tertiary groups within groups).
+- Brand or custom color: Color Set with light, dark, and increased contrast variants of each, even for single-appearance apps (2025).
+- One primary action in a Liquid Glass toolbar (2025): accent color on that button's background only; other controls monochromatic. Colorful or media content behind controls: monochromatic or strongly differentiated accent.
 - Status or state people must understand: color plus label or glyph.
 - Contrast: 4.5:1 minimum; 7:1 for custom pairs and small text; recheck with Increase Contrast and Reduce Transparency in both modes.
-- Sheet, popover, or multitasking window in Dark Mode: system elevated background, no custom paint.
-- Dark-only app: immersive media only; otherwise support light, dark, and Auto.
-- macOS accent: applies only under multicolor; fixed-color sidebar icons are never overridden. Custom components under desktop tinting: some transparency, neutral state only.
+- Sheet, popover, or multitasking window in Dark Mode: system elevated background. Dark-only app: immersive media only.
+- macOS: accent applies only under multicolor; fixed-color sidebar icons never overridden; custom components under desktop tinting get some transparency in a neutral state only.
 - Wide color: Display P3, 16 bits per channel, PNG, with sRGB fallbacks when similar colors or gradients degrade.
 - tvOS focus: scaling and animation, never color alone. visionOS: sparing, bold, large-area color and balanced brightness. watchOS: no full-screen background in long-lived views.
 </decision_guide>
 
 <quick_checklist>
-- [ ] Every color comes from a system or semantic API; no hard-coded system values?
-- [ ] Each color carries one consistent meaning (interactive, status, decorative never overlap)?
+- [ ] Every color comes from a system or semantic API, with no hard-coded system values?
+- [ ] Each color carries one consistent meaning, and semantic roles are respected?
 - [ ] Every custom color has light, dark, and increased contrast variants, even in a single-appearance app?
 - [ ] No information is conveyed by color alone?
 - [ ] Text contrast is at least 4.5:1 (7:1 for custom pairs and small text) in light, dark, Increase Contrast, and Reduce Transparency?
 - [ ] At most one Liquid Glass control is colored, on its background rather than its symbol or text (2025)?
-- [ ] Toolbars and tab bars are monochromatic over colorful content (2025)?
-- [ ] Content at the resting scroll position keeps controls legible (2025)?
+- [ ] Toolbars and tab bars are monochromatic over colorful content, and content at the resting scroll position keeps controls legible (2025)?
 - [ ] No app-specific light/dark toggle, and Auto switching works while running?
-- [ ] Semantic roles respected (separator never as text, secondary label never as background)?
 - [ ] Dark Mode foreground layers use system elevated backgrounds?
 - [ ] Icons and images look right in both appearances, with white-background images softened?
 - [ ] Wide color assets have sRGB-safe fallbacks where gradients or near-identical colors could clip?
