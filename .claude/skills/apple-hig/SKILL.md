@@ -38,6 +38,23 @@ Source of truth: https://developer.apple.com/design/human-interface-guidelines. 
 - **Writing:** concise, specific, in Apple's voice: sentence-style for body, title-style for buttons and titles, verbs for actions, no jargon, and never blame the person in error messages.
 </essential_principles>
 
+<recent_changes>
+Guidance that changed in 2025 and 2026 and supersedes older HIG conventions. Assume older training knowledge is stale on these points; the reference files carry the detail.
+
+- **Liquid Glass design system (2025):** a floating control layer for tab bars, toolbars, sidebars, and system controls with `regular` and `clear` variants; content extends under bars; scroll edge effects replace solid bar backgrounds; controls stay monochrome with tint reserved for one primary action; app icons are layered and rendered with glass effects (Icon Composer, default, dark, clear, and tinted appearances). See `materials.md`, `color-and-dark-mode.md`, `layout.md`, `icons-images-symbols.md`, `components-menus-and-actions.md`.
+- **iPhone Duo (2026):** a folding iPhone; compact width on the outer display, regular on the inner; toolbars, tab bars, Dynamic Island, and status bar move to the vertical axis; reserved regions and arrangement views; build to resize, never per-pose layouts. See `platforms.md`.
+- **Search (2026):** when search is central, give it a primary position: a search tab (standard or button appearance) in tab-bar apps or a field in the bottom toolbar; one search location; show scope. See `components-navigation-and-presentation.md`, `patterns-data-and-content.md`.
+- **Tab bars and sidebars (2025-2026):** the iOS tab bar floats and can minimize on scroll; `sidebarAdaptable` switches between tab bar and sidebar; sidebar icons use the accent color by default and other colors need a clear purpose; a sidebar shows at most two levels.
+- **Sheets (2026):** Done is paired with Cancel or Back, never all three; single-view sheets place Cancel leading and Done trailing; multi-step flows use Back until the final step.
+- **Toolbars and menus (2025-2026):** leading, center, and trailing item groups with one prominent trailing action; no custom bar backgrounds or tinted controls; menu item icons only for the most common actions and consistently within a group; iPadOS has a menu bar.
+- **iPadOS windowing (2025):** apps run full screen or in resizable windows with system window controls, may open multiple windows, and receive no configuration hint, so layouts adapt to any size. Split views are for regular environments.
+- **Typography (2025):** every text style documents an emphasized weight; at accessibility sizes stack inline items, reduce columns, and keep primary elements at the top.
+- **Accessibility (2025):** Assistive Access (core tasks only, one interaction per screen, double confirmation for hard-to-recover actions), Switch Control, Accessibility Nutrition Labels, and a dedicated VoiceOver page.
+- **Widgets and Live Activities (2025):** widget appearances are light, dark, clear, and tinted with full color, accented, and vibrant rendering; visionOS widgets are 3D objects; Live Activities appear in the Mac menu bar and CarPlay Dashboard; Dynamic Island sizes cover iPhone 17 and iPhone Air.
+- **System intelligence (2026):** prefer app schemas over App Shortcuts for common domains; snippets show confirmations and results from app intents (custom views at most 400 pt); Siri guidance revised for Siri AI; generative AI guidance covers letting people refine results, give feedback, and choosing a model type. See `components-system-experiences.md`, `technologies.md`.
+- **Design principles (2026):** the eight principles were reintroduced as tools for weighing competing priorities.
+</recent_changes>
+
 <intake>
 Identify what the person wants from their request. Ask only if the platform or the target is genuinely ambiguous and would change the answer materially; otherwise assume from context (this repository is a Next.js web app, so an unspecified target means the web workflow) and state the assumption.
 
