@@ -1,23 +1,21 @@
 <overview>
-Materials on Apple platforms: Liquid Glass (2025), the floating functional layer for controls and navigation with its regular and clear variants and dimming rule, and the standard materials (ultraThin, thin, regular, thick) with vibrancy for labels, fills, and separators in the content layer.
-Distills the HIG page `materials` (updated 2025-09-09).
-Load when styling toolbars, tab bars, sidebars, or custom controls with `glassEffect`, choosing a blur material for a content-layer background or overlay, picking vibrancy levels for text on a material, or designing visionOS windows.
+Materials on Apple platforms: Liquid Glass (2025), the floating functional layer for controls and navigation with its regular and clear variants and 35% dimming rule, and the standard materials (ultraThin, thin, regular, thick) with vibrancy for labels, fills, and separators in the content layer. Distills the HIG page `materials` (updated 2025-09-09).
+Load when styling toolbars, tab bars, sidebars, or custom controls with `glassEffect`, choosing a blur material for a content-layer background or overlay, picking vibrancy for text on a material, or designing visionOS windows.
 </overview>
 
 <topic name="Liquid Glass" source="https://developer.apple.com/design/human-interface-guidelines/materials" updated="2025-09-09">
 (2025) Liquid Glass is a dynamic material that unifies the design language across Apple platforms. It forms a distinct functional layer for controls and navigation (tab bars, sidebars, toolbars) floating above the content layer; content scrolls and peeks through beneath while controls stay legible. Standard system components adopt it automatically.
 
 <when_to_use>
-- Use Liquid Glass for the functional layer only; use standard materials for content-layer elements such as app backgrounds.
-- Exception: content-layer controls with a transient interactive element (sliders, toggles) take on Liquid Glass while a person activates them.
-- Use the `regular` variant (most system components) when background content might hurt legibility or the component holds significant text: alerts, sidebars, popovers.
-- Use the `clear` variant only for components floating over visually rich media (photos, videos) where the content must stay prominent.
+- Use Liquid Glass for the functional layer only; use standard materials in the content layer (app backgrounds). Exception: sliders and toggles in content take on Liquid Glass while a person activates them.
+- Use `Glass.regular` (most system components) when background content might hurt legibility or the component holds significant text: alerts, sidebars, popovers.
+- Use `Glass.clear` only for components floating over visually rich media (photos, videos) where the content must stay prominent.
 </when_to_use>
 
 <best_practices>
 - **Don't use Liquid Glass in the content layer.** It works by separating interactive elements from content; in content it adds complexity and confuses hierarchy.
 - **Use Liquid Glass effects sparingly.** System components get it automatically; applying it to many custom controls distracts from the content it is meant to highlight. Limit custom effects (`glassEffect(_:in:)`) to the most important functional elements.
-- **Only use clear Liquid Glass for components that appear over visually rich backgrounds.** `Glass.regular` blurs and adjusts the luminosity of background content for legibility, and scroll edge effects further blur and reduce its opacity. `Glass.clear` is highly translucent and prioritizes the underlying content for immersive media. Both change appearance with a preferred look for Liquid Glass chosen in device settings, Reduce Transparency, or Increase Contrast.
+- **Only use clear Liquid Glass for components that appear over visually rich backgrounds.** The regular variant blurs and adjusts the luminosity of background content, and scroll edge effects further blur and reduce its opacity; the clear variant is highly translucent and prioritizes the underlying content for immersive media. Both change appearance under a preferred look for Liquid Glass chosen in device settings, Reduce Transparency, or Increase Contrast.
 - **Decide whether clear Liquid Glass needs a dimming layer.** Bright underlying content: add a dark dimming layer of 35% opacity. Sufficiently dark content, or standard AVKit media playback controls (which provide their own dimming layer): none.
 - **Color Liquid Glass sparingly.** It has no inherent color by default; see the color reference for tinting rules.
 </best_practices>
@@ -48,7 +46,7 @@ Standard materials and effects (blur, vibrancy, blending modes) create depth, la
 - **iOS, iPadOS:** Four content-layer materials: `ultraThin`, `thin`, `regular` (default), `thick`. Vibrant colors for labels, fills, and separators are tuned per material; the default level has the highest contrast and quaternary the lowest (specs). Avoid quaternary labels on `thin` and `ultraThin`.
 - **macOS:** Purpose-specific materials (`NSVisualEffectView.Material`) and vibrant versions of all system colors. Choose when to allow vibrancy in custom views and controls, testing in many contexts. Choose a blending mode, behind window or within window (`NSVisualEffectView.BlendingMode`).
 - **tvOS:** Standard materials define structure in the content layer; thickness sets how much content shows through (specs).
-- **visionOS:** Windows use glass, an unmodifiable adaptive material that lets light, the current Environment, virtual content, and surroundings show through while limiting background color range to keep contrast, brightening or darkening with the surroundings. No Dark Mode setting; glass adapts to the luminance behind it. Prefer translucency to opaque colors in windows; opacity blocks the view and feels constricting. Custom components and vibrancy levels are in specs.
+- **visionOS:** Windows use glass, an unmodifiable adaptive material that lets light, the current Environment, virtual content, and surroundings show through while limiting background color range to keep contrast, brightening or darkening with the surroundings. No Dark Mode setting; glass adapts to the luminance behind it. Prefer translucency to opaque colors in windows; opacity blocks the view and feels constricting. Custom component materials and vibrancy levels are in specs.
 - **watchOS:** Use materials to provide context in full-screen modal views, which are common; the contrast orients people and separates controls and system elements from content. Avoid removing or replacing the default material backgrounds of modal sheets.
 </platform_considerations>
 
@@ -95,18 +93,14 @@ Standard materials and effects (blur, vibrancy, blending modes) create depth, la
 - App background, content card, in-content overlay: standard material, never Liquid Glass; `ultraThin`/`thin` for context, `regular`/`thick` for contrast.
 - Slider or toggle inside content: standard at rest, Liquid Glass while activated (system behavior).
 - Custom control emphasis: `glassEffect` only for the most important functional elements.
-- Text on any material: vibrant `label`, then `secondaryLabel`/`tertiaryLabel` for hierarchy; no quaternary on thin materials.
-- macOS effect view: material by purpose, behind-window or within-window blending, vibrancy tested in context.
-- tvOS overlay: `ultraThin` light full-screen, `thin` light overlay, `regular` overlay, `thick` dark overlay; focused image views and buttons get Liquid Glass automatically.
-- visionOS window: translucent system glass; `thin` interactive, `regular` sections, `thick` dark-on-regular; three text vibrancy levels.
-- watchOS modal sheet: keep the default material.
+- Text on any material: vibrant `label`, then `secondaryLabel`/`tertiaryLabel`; no quaternary on thin materials.
+- Platform tables: tvOS overlay materials by light or dark scheme; visionOS glass windows with `thin`/`regular`/`thick` and three vibrancy levels; macOS material by purpose plus blending mode; watchOS default sheet materials kept.
 </decision_guide>
 
 <quick_checklist>
 - [ ] Liquid Glass confined to controls and navigation, none on backgrounds or content?
 - [ ] Custom `glassEffect` limited to the most important functional elements?
-- [ ] Clear variant only over photos, video, or similar rich media?
-- [ ] Clear Liquid Glass over bright content has a 35% dark dimming layer, omitted over dark content or AVKit controls?
+- [ ] Clear variant only over photos, video, or similar rich media, with a 35% dark dimming layer when the media is bright?
 - [ ] Alerts, sidebars, popovers, and other text-heavy floating elements use the regular variant?
 - [ ] Content-layer materials chosen for context versus contrast, not apparent color?
 - [ ] Labels, fills, and separators on materials use vibrant system colors, no quaternary on thin materials?
