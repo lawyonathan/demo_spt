@@ -36,6 +36,9 @@ import { ExpandableCard } from "@/components/ui/expandable-card";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { LightBoard } from "@/components/ui/lightboard";
 import { MacOSDock } from "@/components/ui/macos-dock";
+import { GraphitePaper } from "@/components/ui/graphite-paper";
+import { GraphiteHeading } from "@/components/ui/graphite-heading";
+import Link from "next/link";
 
 import {
   CheckCircle2, Music, Home, Mail, Settings,
@@ -166,7 +169,7 @@ export default function HomePage() {
         <div className="flex justify-center gap-2 mt-4">
           <Badge variant="soft-info">shadcn/ui Base</Badge>
           <Badge variant="soft-success">18 Extended Components</Badge>
-          <Badge variant="soft" shape="pill">11 Motion Components</Badge>
+          <Badge variant="soft" shape="pill">12 Motion Components</Badge>
         </div>
       </div>
 
@@ -516,6 +519,18 @@ export default function HomePage() {
 
       <Separator />
 
+      <Section title="Graphite" description="Digital charcoal & graphite: paper grain, scroll-deposited tone, a smudgeable lead field, charcoal inversion to slate">
+        <Link href="/graphite" className="block group" aria-label="Open the Graphite monograph">
+          <GraphitePaper grid className="overflow-hidden rounded-lg border p-8 transition-shadow group-hover:shadow-lg md:p-10">
+            <p className="graphite-mono">Monograph &#8470; 01 &middot; open the plates &rarr;</p>
+            <GraphiteHeading as="p" reveal="scroll" className="mt-3 text-[clamp(2.5rem,8vw,6rem)]">Graphite</GraphiteHeading>
+            <p className="graphite-mono mt-4">Canvas 2D &middot; SVG filters &middot; Web Audio &middot; no WebGL</p>
+          </GraphitePaper>
+        </Link>
+      </Section>
+
+      <Separator />
+
       <Section title="Component Inventory">
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
@@ -542,7 +557,7 @@ export default function HomePage() {
             <CardHeader><CardTitle className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-info" />Motion & Expressive</CardTitle></CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-1">
-                {["DynamicIsland", "GradientHeading", "TextAnimate", "Typewriter", "AnimatedNumber", "FloatingPanel", "DirectionAwareTabs", "ExpandableCard", "ColorPicker", "LightBoard", "MacOSDock"].map((c) => (
+                {["DynamicIsland", "GradientHeading", "TextAnimate", "Typewriter", "AnimatedNumber", "FloatingPanel", "DirectionAwareTabs", "ExpandableCard", "ColorPicker", "LightBoard", "MacOSDock", "Graphite"].map((c) => (
                   <Badge key={c} variant="soft-info" size="sm">{c}</Badge>
                 ))}
               </div>
@@ -552,7 +567,7 @@ export default function HomePage() {
       </Section>
 
       <div className="text-center py-8">
-        <p className="text-sm text-muted-foreground">47 total components &middot; 18 base &middot; 18 extended &middot; 11 motion</p>
+        <p className="text-sm text-muted-foreground">48 total components &middot; 18 base &middot; 18 extended &middot; 12 motion</p>
       </div>
     </div>
   );

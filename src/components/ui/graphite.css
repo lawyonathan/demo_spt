@@ -1,0 +1,355 @@
+/*
+ * Graphite kit: cold-press paper, soft lead, charcoal and chalk.
+ * Everything is scoped under .graphite-paper so it never leaks into the rest
+ * of the design system. Two tones: "paper" (warm archival) and "slate"
+ * (obsidian, chalk ink). Switching the data attribute cross-fades them.
+ */
+
+.graphite-paper {
+  --graphite-paper: #f5f2eb;
+  --graphite-ink: #1f1e1c;
+  --graphite-ink-soft: #57544d;
+  --graphite-ink-faint: rgba(31, 30, 28, 0.38);
+  --graphite-grid: rgba(31, 30, 28, 0.07);
+  --graphite-grain-opacity: 0.2;
+  --graphite-grain-blend: multiply;
+  --graphite-vignette: rgba(0, 0, 0, 0.09);
+  --graphite-display: var(--font-graphite-display), Impact, "Arial Narrow", "Helvetica Neue", sans-serif;
+  --graphite-script: var(--font-graphite-script), "Bradley Hand", "Segoe Script", "Comic Sans MS", cursive;
+  --graphite-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  position: relative;
+  isolation: isolate;
+  background-color: var(--graphite-paper);
+  color: var(--graphite-ink);
+  transition: background-color 900ms ease, color 900ms ease;
+}
+
+[data-graphite-tone="slate"] {
+  --graphite-paper: #0d0d0e;
+  --graphite-ink: #e8e4da;
+  --graphite-ink-soft: #a8a49b;
+  --graphite-ink-faint: rgba(232, 228, 218, 0.35);
+  --graphite-grid: rgba(232, 228, 218, 0.05);
+  --graphite-grain-opacity: 0.14;
+  --graphite-grain-blend: screen;
+  --graphite-vignette: rgba(0, 0, 0, 0.4);
+}
+
+/* ---- paper layers ------------------------------------------------------ */
+
+.graphite-paper__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* paper tooth: high-frequency fractal noise, multiplied onto the paper */
+.graphite-paper__grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: var(--graphite-grain-opacity);
+  mix-blend-mode: var(--graphite-grain-blend);
+}
+
+/* cotton fibres: anisotropic noise stretched along the grain direction */
+.graphite-paper__fibers {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.35' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-size: 400px 400px;
+  opacity: 0.07;
+  mix-blend-mode: var(--graphite-grain-blend);
+}
+
+.graphite-paper__grid {
+  background-image:
+    linear-gradient(var(--graphite-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--graphite-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+}
+
+.graphite-paper__vignette {
+  background: radial-gradient(ellipse at center, transparent 58%, var(--graphite-vignette) 100%);
+}
+
+/* a hand-ruled margin, wobbled by the rough filter */
+.graphite-paper__deckle {
+  position: absolute;
+  inset: 14px;
+  border: 1.5px solid var(--graphite-ink);
+  opacity: 0.32;
+  filter: url(#graphite-rough);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---- typography -------------------------------------------------------- */
+
+.graphite-display {
+  font-family: var(--graphite-display);
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+}
+
+.graphite-script {
+  font-family: var(--graphite-script);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+
+.graphite-mono {
+  font-family: var(--graphite-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--graphite-ink-soft);
+}
+
+/* ---- filters as utilities --------------------------------------------- */
+
+.graphite-rough {
+  filter: url(#graphite-rough);
+}
+
+/* "boiling line": the displacement seed steps every few frames, the way
+   hand-drawn animation shot on twos never quite holds still */
+.graphite-boil {
+  filter: url(#graphite-boil);
+}
+
+.graphite-rub {
+  filter: url(#graphite-rub);
+}
+
+[data-graphite-tone="slate"] .graphite-rub {
+  filter: url(#graphite-chalk);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graphite-boil {
+    filter: url(#graphite-rough);
+  }
+}
+
+/* ---- heading: contour → hatch → flat rub ------------------------------- */
+
+.graphite-heading {
+  position: relative;
+  display: inline-block;
+  font-family: var(--graphite-display);
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  color: var(--graphite-ink);
+  --graphite-contour: 1;
+  --graphite-hatch: 1;
+  --graphite-tone: 1;
+  --graphite-hatch-angle: -38deg;
+}
+
+.graphite-heading__tone,
+.graphite-heading__hatch,
+.graphite-heading__contour {
+  display: block;
+  white-space: inherit;
+}
+
+.graphite-heading__tone {
+  position: relative;
+  filter: url(#graphite-rub);
+  clip-path: inset(-12% calc((1 - var(--graphite-tone)) * 104%) -12% -4%);
+}
+
+[data-graphite-tone="slate"] .graphite-heading__tone {
+  filter: url(#graphite-chalk);
+}
+
+.graphite-heading__hatch,
+.graphite-heading__contour {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.graphite-heading__hatch {
+  color: transparent;
+  background-image: repeating-linear-gradient(
+    var(--graphite-hatch-angle),
+    var(--graphite-ink) 0 1px,
+    transparent 1px 5px
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.85;
+  filter: url(#graphite-rough);
+  clip-path: inset(0 calc((1 - var(--graphite-hatch)) * 100%) 0 0);
+}
+
+.graphite-heading__contour {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--graphite-ink);
+  opacity: 0.9;
+  filter: url(#graphite-rough);
+  clip-path: inset(0 calc((1 - var(--graphite-contour)) * 100%) 0 0);
+}
+
+/* ---- marginalia -------------------------------------------------------- */
+
+.graphite-marginalia {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  pointer-events: none;
+  color: var(--graphite-ink-soft);
+  font-family: var(--graphite-script);
+  font-size: 1.15rem;
+  line-height: 1;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.graphite-marginalia svg {
+  overflow: visible;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---- telemetry bar ----------------------------------------------------- */
+
+.graphite-telemetry {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.6rem;
+  padding: 0.6rem 1rem;
+  font-family: var(--graphite-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--graphite-ink-soft);
+  background: color-mix(in oklab, var(--graphite-paper) 84%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--graphite-ink-faint);
+  transition: background-color 900ms ease, color 900ms ease;
+}
+
+@media (max-width: 640px) {
+  .graphite-telemetry {
+    gap: 0.35rem 1rem;
+    padding: 0.5rem 0.85rem;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+  .graphite-telemetry__plate {
+    display: none;
+  }
+}
+
+.graphite-telemetry__value {
+  display: inline-block;
+  min-width: 3.2ch;
+  color: var(--graphite-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.graphite-telemetry__spacer {
+  flex: 1;
+}
+
+/* ---- controls ---------------------------------------------------------- */
+
+.graphite-button {
+  appearance: none;
+  font-family: var(--graphite-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--graphite-ink);
+  border-radius: 2px;
+  color: var(--graphite-ink);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.graphite-button:hover,
+.graphite-button:focus-visible {
+  background: color-mix(in oklab, var(--graphite-ink) 12%, transparent);
+  outline: none;
+}
+
+.graphite-button[aria-pressed="true"] {
+  background: var(--graphite-ink);
+  color: var(--graphite-paper);
+}
+
+/* ---- canvases ---------------------------------------------------------- */
+
+.graphite-canvas-host {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: none;
+}
+
+.graphite-canvas-host canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.graphite-stump {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--graphite-stump-size, 52px);
+  height: var(--graphite-stump-size, 52px);
+  border-radius: 50%;
+  border: 1px solid var(--graphite-ink-faint);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--graphite-paper) 60%, transparent);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  will-change: transform;
+}
+
+.graphite-canvas-host:hover .graphite-stump {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .graphite-canvas-host {
+    cursor: auto;
+  }
+  .graphite-stump {
+    display: none;
+  }
+}
+
+/* ---- small helpers ----------------------------------------------------- */
+
+.graphite-soft {
+  color: var(--graphite-ink-soft);
+}
+
+.graphite-hairline {
+  border: 1px solid var(--graphite-ink-faint);
+}
